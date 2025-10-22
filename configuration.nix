@@ -21,7 +21,6 @@ in {
   nixpkgs.overlays = [
     (self: super: {
       obsidian-wayland = super.obsidian.override { electron = self.electron_38; };
-      # obsidian-wayland = super.obsidian.override { electron = self.electron_24; };
     })
   ];
 
@@ -29,13 +28,11 @@ in {
     allowBroken = true;
     permittedInsecurePackages = [
       "electron-29.4.6"
-      # "electron-24.8.6"
     ];
   };
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  # boot.loader.efi.efiSysMountPoint = "/boot/EFI";
   boot.kernelPackages = pkgs.linuxPackages;  #_latest; #pkgs.linuxPackages_6_10;pkgs.linuxPackages;   
   # boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" ];
   #Boot entries limit
@@ -116,7 +113,7 @@ in {
   services.avahi.nssmdns4 = true;
   services.avahi.openFirewall = true;
   # sound.enable = true;
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -141,7 +138,7 @@ in {
   };
   
   # Do nothing if AC on
-  services.logind.lidSwitchExternalPower = "ignore";
+  services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 
   # Disable GNOMEs power management
   services.power-profiles-daemon.enable = false;

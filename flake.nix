@@ -14,10 +14,6 @@
     let
       user = "sla";
       system = "x86_64-linux";
-      # pkgs = import nixpkgs {
-      #   inherit system;
-      #   config.allowUnfree = true;
-      # };
       lib = nixpkgs.lib;
       # This is where we sync the versions
       # kernelPackages = pkgs.linuxPackages_latest;

@@ -821,7 +821,7 @@ in
     go = {
       enable = true;
       package = myGo;
-      goPath = "go";
+      env.GOPATH = "go";
     };
     alacritty = {
       enable = true;

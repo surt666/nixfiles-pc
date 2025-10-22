@@ -6,21 +6,7 @@
   ''
     # Builtin monitor
     # monitor=,preferred,auto,1 # Fallback
-    # monitor=eDP-1,2560x1600@60,5120x0,1.25
-    # monitor=Unknown-1,1920x1600@60,auto,1
     monitor=HDMI-A-2,5120x2160@60,0x0,1
-    # monitor=DP-1,5120x2160@60,0x0,1
-    # monitor=DP-2,5120x2160@60,0x0,1
-    # monitor=DP-2,preferred,0x0,1,mirror,eDP-1
-    # Mirroring can't scale resolution
-    # monitor=HDMI-A-1,2560x1600@30.0,auto,1,mirror,eDP-1
-    # monitor=HDMI-A-1,preferred,auto,1,mirror,eDP-1
-    # monitor=HDMI-A-1,preferred,0x0,1,mirror,eDP-1
-    # Display port monitor to the left of edp-1
-    # Add for HDMI too
-    #unknown set to preferred resolution 
-    # monitor=,preferred,auto,1
-    #unknown set to highest resolution 
     #monitor=,highres,auto,1
 
     # See https://wiki.hyprland.org/Configuring/Keywords/ for more
@@ -94,7 +80,7 @@
     
     # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
     input {
-        kb_layout = us,dk
+        kb_layout = dk,us
         kb_variant = 
         kb_model =
         kb_options = grp:alt_space_toggle 
@@ -102,12 +88,6 @@
 
         follow_mouse = 1
 
-        touchpad {
-            natural_scroll = no
-        }
-        # epic-mouse-v1 {
-        #     sensitivity = -0.5
-        # }
         sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
     }
 
@@ -241,13 +221,6 @@
     bind = $mainMod, mouse_down, workspace, e+1
     bind = $mainMod, mouse_up, workspace, e-1
 
-    # Screen brightness
-    bind = , XF86MonBrightnessUp, exec, brightnessctl s +5%
-    bind = , XF86MonBrightnessDown, exec, brightnessctl s 5%-
-
-    # Keyboard backlight
-    # bind = , xf86KbdBrightnessUp, exec, brightnessctl -d *::kbd_backlight set +33%
-    # bind = , xf86KbdBrightnessDown, exec, brightnessctl -d *::kbd_backlight set 33%-
 
     # Sound
     # wpctl set-default 59 to set default sink to 59
