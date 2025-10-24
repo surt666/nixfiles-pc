@@ -18,29 +18,30 @@ in {
       # <home-manager/nixos>
     ];
 
-  nixpkgs.overlays = [
-    (self: super: {
-      obsidian-wayland = super.obsidian.override { electron = self.electron_38; };
-    })
-  ];
+  # nixpkgs.overlays = [
+  #   (self: super: {
+  #     obsidian-wayland = super.obsidian.override { electron = self.electron_38; };
+  #   })
+  # ];
 
-  nixpkgs.config = {
-    allowBroken = true;
-    permittedInsecurePackages = [
-      "electron-29.4.6"
-    ];
-  };
+  # nixpkgs.config = {
+  #   allowBroken = true;
+  #   permittedInsecurePackages = [
+  #     "electron-29.4.6"
+  #   ];
+  # };
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages;  #_latest; #pkgs.linuxPackages_6_10;pkgs.linuxPackages;   
-  # boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" ];
+  boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" ];
   #Boot entries limit
-  boot.loader.systemd-boot.configurationLimit = 30;
-  boot.kernelModules = [ "nvidia" "nvidia_uvm" ];
-  # boot.extraModprobeConfig = ''
-  #   options nvidia NVreg_PreserveVideoMemoryAllocations=1
-  # '';
+  boot.loader.systemd-boot.configurationLimit = 20;
+  boot.kernelModules = [ "nvidia"];
+  # boot.kernelModules = [ "nvidia" "nvidia_uvm" ];
+  boot.extraModprobeConfig = ''
+    options nvidia NVreg_PreserveVideoMemoryAllocations=1
+  '';
  
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
@@ -57,9 +58,9 @@ in {
   time.timeZone = "Europe/Copenhagen";
 
   # Select internationalisation properties.
-  i18n.supportedLocales = [ "en_US.UTF-8/UTF-8" "da_DK.UTF-8/UTF-8" ];
+  i18n.extraLocales = [ "en_US.UTF-8/UTF-8" "da_DK.UTF-8/UTF-8" ];
 
-  i18n.defaultLocale = "da_DK.UTF-8";
+  i18n.defaultLocale = "en_US.UTF-8"; # "da_DK.UTF-8";
 
   swapDevices = [
     { device = "/swapfile"; size = 34816; }
@@ -74,6 +75,8 @@ in {
       sddm = {
         enable = true;
         wayland.enable = true;  # For Hyprland
+    # autoLogin.enable = true;
+    # autoLogin.user = "sla";
       };
     };
 
@@ -95,10 +98,6 @@ in {
         ];
       };
     };
-    # displayManager.sddm.enable = true;
-    # displayManager.sddm.wayland.enable = true;
-    # displayManager.autoLogin.enable = true;
-    # displayManager.autoLogin.user = "sla";
   };
 
   # Configure console keymap
@@ -192,17 +191,17 @@ in {
     shell = pkgs.nushell;
   };
 
-  services.udev = {
-    enable = true;
-    extraRules = ''
-        KERNEL=="hidraw*", ATTRS{idVendor}=="16c0", MODE="0664", GROUP="plugdev"
-        KERNEL=="hidraw*", ATTRS{idVendor}=="3297", MODE="0664", GROUP="plugdev"
-        SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
-        SUBSYSTEM=="usb", ATTR{idVendor}=="3297", ATTR{idProduct}=="1977", MODE="0666", SYMLINK+="ignition_dfu"
-        SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c093", MODE="0666", SYMLINK+="ignition_dfu"
-        ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="3297", ATTR{idProduct}=="1977", TEST=="power/control", ATTR{power/control}="on"
-    '';
-  };
+  # services.udev = {
+  #   enable = true;
+  #   extraRules = ''
+  #       KERNEL=="hidraw*", ATTRS{idVendor}=="16c0", MODE="0664", GROUP="plugdev"
+  #       KERNEL=="hidraw*", ATTRS{idVendor}=="3297", MODE="0664", GROUP="plugdev"
+  #       SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
+  #       SUBSYSTEM=="usb", ATTR{idVendor}=="3297", ATTR{idProduct}=="1977", MODE="0666", SYMLINK+="ignition_dfu"
+  #       SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c093", MODE="0666", SYMLINK+="ignition_dfu"
+  #       ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="3297", ATTR{idProduct}=="1977", TEST=="power/control", ATTR{power/control}="on"
+  #   '';
+  # };
   
   # services.plex = {
   #   enable = true;
@@ -273,12 +272,6 @@ in {
       EDITOR = "hx";
       VISUAL = "hx";
       MOZ_ENABLE_WAYLAND = 1;
-      # XCURSOR_THEME = "Adwaita";  # Set your preferred cursor theme
-      # XCURSOR_SIZE = "48";        # Set your preferred cursor size
-      # QT_QPA_PLATFORMTHEME = "qt5ct";
-      # QT_SCALE_FACTOR=2.6;
-      # ELM_SCALE=2.6;
-      # GDK_SCALE=2.6;
       HYPRLAND_CURSOR_SIZE = "48";
     };
     systemPackages = with pkgs; [
@@ -340,7 +333,7 @@ in {
       hypridle
       hyprlock
       file
-      obsidian-wayland
+      # obsidian-wayland
       wofi
       rofi
       networkmanagerapplet
@@ -353,6 +346,7 @@ in {
       wl-clipboard
       wlroots
       dunst
+      nvtopPackages.nvidia
       # cudatoolkit
       glibc
       gtk3
@@ -397,7 +391,7 @@ in {
       gcc13
       stdenv.cc.cc.lib
       jdk
-      kdePackages.xwaylandvideobridge
+      # kdePackages.xwaylandvideobridge
       marksman
       zoom-us
       tailwindcss
@@ -506,21 +500,8 @@ in {
       powerManagement.enable = false;
       powerManagement.finegrained = false;
       open = true;
-      # nvidiaSettings = true;
+      nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
-      # package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      #   version = "580.76.05";
-      #   sha256_64bit = "sha256-IZvmNrYJMbAhsujB4O/4hzY8cx+KlAyqh7zAVNBdl/0=";
-      #   sha256_aarch64 = "sha256-NL2DswzVWQQMVM092NmfImqKbTk9VRgLL8xf4QEvGAQ=";
-      #   openSha256 = "sha256-xEPJ9nskN1kISnSbfBigVaO6Mw03wyHebqQOQmUg/eQ=";
-      #   settingsSha256 = "sha256-ll7HD7dVPHKUyp5+zvLeNqAb6hCpxfwuSyi+SAXapoQ=";
-      #   persistencedSha256 = "sha256-bs3bUi8LgBu05uTzpn2ugcNYgR5rzWEPaTlgm0TIpHY=";
-      # };
-      # prime   = {
-      #   sync.enable = true;
-      #   intelBusId     = "PCI:0:2:0"; # lspci | grep VGA | grep Intel
-      #   nvidiaBusId    = "PCI:1:0:0"; # lspci | grep VGA | grep NVIDIA
-      # };
     };
   };
 

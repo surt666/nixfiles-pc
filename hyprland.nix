@@ -6,7 +6,9 @@
   ''
     # Builtin monitor
     # monitor=,preferred,auto,1 # Fallback
-    monitor=HDMI-A-2,5120x2160@60,0x0,1
+    # monitor=HDMI-A-2,1920x1980@60,0x0,1
+    # monitor=HDMI-A-2,5120x2160@30,0x0,1
+    monitor=DP-6,5120x2160@59.98,0x0,1
     #monitor=,highres,auto,1
 
     # See https://wiki.hyprland.org/Configuring/Keywords/ for more
@@ -80,7 +82,7 @@
     
     # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
     input {
-        kb_layout = dk,us
+        kb_layout = us,dk
         kb_variant = 
         kb_model =
         kb_options = grp:alt_space_toggle 
@@ -225,10 +227,10 @@
     # Sound
     # wpctl set-default 59 to set default sink to 59
     # use wpctl to see sinks
-    bind = , XF86AudioMute, exec, pamixer -t
-    bind = , XF86AudioRaiseVolume, exec, pamixer -i 5
-    bind = , XF86AudioLowerVolume, exec, pamixer -d 5
-    bind = , XF86AudioMicMute, exec, pamixer --default-source -m
+    # bind = , XF86AudioMute, exec, pamixer -t
+    # bind = , XF86AudioRaiseVolume, exec, pamixer -i 5
+    # bind = , XF86AudioLowerVolume, exec, pamixer -d 5
+    # bind = , XF86AudioMicMute, exec, pamixer --default-source -m
 
     # Move/resize windows with mainMod + LMB/RMB and dragging
     bindm = $mainMod, mouse:272, movewindow
