@@ -6,6 +6,7 @@
 
   # Enable Intel iGPU early in the boot process
   # boot.initrd.kernelModules = [ "i915" ];
+
 let  # Define cross-compilation targets
   aarch64-linux-musl = pkgs.pkgsCross.aarch64-multiplatform-musl;
   aarch64-linux = pkgs.pkgsCross.aarch64-multiplatform;
@@ -31,17 +32,21 @@ in {
   #   ];
   # };
   # Bootloader.
+  boot.initrd.systemd.enable = true;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.blacklistedKernelModules = [ "amdgpu" ];
   boot.kernelPackages = pkgs.linuxPackages;  #_latest; #pkgs.linuxPackages_6_10;pkgs.linuxPackages;   
   boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" ];
+  # boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "resume=UUID=1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba" "resume_offset=21792768" "pm_freeze_timeout=30000"]; 
+  # boot.resumeDevice = "/dev/disk/by-uuid/1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba";
   #Boot entries limit
   boot.loader.systemd-boot.configurationLimit = 20;
   boot.kernelModules = [ "nvidia"];
   # boot.kernelModules = [ "nvidia" "nvidia_uvm" ];
-  boot.extraModprobeConfig = ''
-    options nvidia NVreg_PreserveVideoMemoryAllocations=1
-  '';
+  # boot.extraModprobeConfig = ''
+  #   options nvidia NVreg_PreserveVideoMemoryAllocations=1
+  # '';
  
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
@@ -62,9 +67,9 @@ in {
 
   i18n.defaultLocale = "en_US.UTF-8"; # "da_DK.UTF-8";
 
-  swapDevices = [
-    { device = "/swapfile"; size = 34816; }
-  ];
+  # swapDevices = [
+  #   { device = "/swapfile"; }
+  # ];
 
   services.acpid.enable = true;
   hardware.acpilight.enable = true;
@@ -142,8 +147,10 @@ in {
   # Disable GNOMEs power management
   services.power-profiles-daemon.enable = false;
 
-  # Enable powertop
-  powerManagement.powertop.enable = true;
+  # This will only run AFTER the system has fully resumed
+  powerManagement.resumeCommands = ''
+    ${pkgs.systemd}/bin/systemctl restart display-manager.service
+  '';
 
   # Enable thermald (only necessary if on Intel CPUs)
   services.thermald.enable = true;
@@ -165,6 +172,27 @@ in {
 
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
+  systemd.services.hibernate-wifi-fix = {
+    description = "Unload WiFi driver before sleep";
+    before = [ "systemd-hibernate.service" "systemd-suspend.service" ];
+    wantedBy = [ "systemd-hibernate.service" "systemd-suspend.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.kmod}/bin/modprobe -r mt7925e";
+      ExecStop = "${pkgs.kmod}/bin/modprobe mt7925e";
+      RemainAfterExit = true;
+    };
+  };
+  # systemd.services.set-resume-device = {
+  #   description = "Set resume device for hibernation";
+  #   wantedBy = [ "multi-user.target" ];
+  #   after = [ "local-fs.target" ];
+  #   serviceConfig = {
+  #     Type = "oneshot";
+  #     ExecStart = "${pkgs.bash}/bin/bash -c 'echo 259:5 > /sys/power/resume'";
+  #     RemainAfterExit = true;
+  #   };
+  # };
   # systemd.services = {
   #   nvidia-suspend.serviceConfig = lib.mkForce {
   #     Type = "oneshot";
@@ -191,18 +219,21 @@ in {
     shell = pkgs.nushell;
   };
 
-  # services.udev = {
-  #   enable = true;
-  #   extraRules = ''
-  #       KERNEL=="hidraw*", ATTRS{idVendor}=="16c0", MODE="0664", GROUP="plugdev"
-  #       KERNEL=="hidraw*", ATTRS{idVendor}=="3297", MODE="0664", GROUP="plugdev"
-  #       SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
-  #       SUBSYSTEM=="usb", ATTR{idVendor}=="3297", ATTR{idProduct}=="1977", MODE="0666", SYMLINK+="ignition_dfu"
-  #       SUBSYSTEM=="usb", ATTR{idVendor}=="046d", ATTR{idProduct}=="c093", MODE="0666", SYMLINK+="ignition_dfu"
-  #       ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="3297", ATTR{idProduct}=="1977", TEST=="power/control", ATTR{power/control}="on"
-  #   '';
-  # };
-  
+  services.udev = {
+    enable = true;
+    extraRules = ''
+      # Voyager - WebUSB access (this is the critical part)
+      SUBSYSTEM=="usb", ATTRS{idVendor}=="3297", ATTRS{idProduct}=="1977", MODE="0666", TAG+="uaccess"
+    
+      # Voyager - HID access
+      KERNEL=="hidraw*", ATTRS{idVendor}=="3297", MODE="0666", TAG+="uaccess"
+    
+      # Additional Voyager rules
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE="0666", TAG+="uaccess"
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
+    '';
+  };
+    
   # services.plex = {
   #   enable = true;
   #   openFirewall = true;  # Opens required ports in firewall
@@ -301,7 +332,12 @@ in {
       terraform-ls
       adwaita-qt
       maven
-      google-chrome
+      # google-chrome
+      (google-chrome.override {
+        commandLineArgs = [
+          "--disable-webusb-security"
+        ];
+      })
       lxappearance
       postgresql
       fwupd

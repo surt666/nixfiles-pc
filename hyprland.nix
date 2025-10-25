@@ -8,7 +8,7 @@
     # monitor=,preferred,auto,1 # Fallback
     # monitor=HDMI-A-2,1920x1980@60,0x0,1
     # monitor=HDMI-A-2,5120x2160@30,0x0,1
-    monitor=DP-6,5120x2160@59.98,0x0,1
+    monitor=DP-3,5120x2160@59.98,0x0,1
     #monitor=,highres,auto,1
 
     # See https://wiki.hyprland.org/Configuring/Keywords/ for more
@@ -68,12 +68,12 @@
         key_press_enables_dpms = true
     }
 
-    workspace = 1, monitor:HDMI-A-2, default:true
-    workspace = 2, monitor:HDMI-A-2, default:true
-    workspace = 3, monitor:HDMI-A-2, default:true
-    workspace = 4, monitor:HDMI-A-2, default:true
-    workspace = 5, monitor:HDMI-A-2, default:true
-    workspace = 9, monitor:HDMI-A-2, default:true
+    # workspace = 1, monitor:HDMI-A-2, default:true
+    # workspace = 2, monitor:HDMI-A-2, default:true
+    # workspace = 3, monitor:HDMI-A-2, default:true
+    # workspace = 4, monitor:HDMI-A-2, default:true
+    # workspace = 5, monitor:HDMI-A-2, default:true
+    # workspace = 9, monitor:HDMI-A-2, default:true
     
     debug {
         disable_logs = false
@@ -183,6 +183,7 @@
     bind = $mainMod, W, exec, wofi --show drun
     bind = $mainMod, O, exec, obsidian
     bind = $mainMod, L, exec, hyprlock
+    bind = $mainMod SHIFT, H, exec, systemctl suspend
     bind = $mainMod, J, togglesplit, # dwindle
     bind = $mainMod, C, movetoworkspace, special
     bind = $mainMod SHIFT, C, togglespecialworkspace,
