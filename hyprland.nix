@@ -16,6 +16,7 @@
     # Execute your favorite apps at launch
     exec-once = waybar & firefox #& hyprpaper 
     exec-once = hypridle
+    exec-once = winboat
     # exec-once = waybar & google-chrome-stable #& firefox #& hyprpaper
     # exec-once = ~/.config/hypr/scripts/suspend.sh
     # exec-once = wl-clipboard-history -t

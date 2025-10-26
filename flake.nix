@@ -8,9 +8,10 @@
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs"; 
+    winboat.url = "github:TibixDev/winboat";
   };
 
-  outputs = { self, nixpkgs, hyprland, home-manager, rust-overlay, ... } @ inputs:
+  outputs = { self, nixpkgs, hyprland, home-manager, rust-overlay, winboat, ... } @ inputs:
     let
       user = "sla";
       system = "x86_64-linux";
@@ -26,7 +27,12 @@
           modules = [ 
             {
               nixpkgs.config.allowUnfree = true;
-              nixpkgs.overlays = [ rust-overlay.overlays.default ];
+              nixpkgs.overlays = [
+                rust-overlay.overlays.default
+                (final: prev: {
+                  winboat = winboat.packages.${prev.system}.winboat;
+                })
+              ];
             }
             ./configuration.nix 
             ({ pkgs, ... }: {

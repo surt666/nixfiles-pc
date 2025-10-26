@@ -37,7 +37,7 @@ in {
   boot.loader.efi.canTouchEfiVariables = true;
   boot.blacklistedKernelModules = [ "amdgpu" ];
   boot.kernelPackages = pkgs.linuxPackages;  #_latest; #pkgs.linuxPackages_6_10;pkgs.linuxPackages;   
-  boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" ];
+  boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "mem_sleep_default=s2idle" ];
   # boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "resume=UUID=1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba" "resume_offset=21792768" "pm_freeze_timeout=30000"]; 
   # boot.resumeDevice = "/dev/disk/by-uuid/1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba";
   #Boot entries limit
@@ -172,17 +172,17 @@ in {
 
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
-  systemd.services.hibernate-wifi-fix = {
-    description = "Unload WiFi driver before sleep";
-    before = [ "systemd-hibernate.service" "systemd-suspend.service" ];
-    wantedBy = [ "systemd-hibernate.service" "systemd-suspend.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.kmod}/bin/modprobe -r mt7925e";
-      ExecStop = "${pkgs.kmod}/bin/modprobe mt7925e";
-      RemainAfterExit = true;
-    };
-  };
+  # systemd.services.hibernate-wifi-fix = {
+  #   description = "Unload WiFi driver before sleep";
+  #   before = [ "systemd-hibernate.service" "systemd-suspend.service" ];
+  #   wantedBy = [ "systemd-hibernate.service" "systemd-suspend.service" ];
+  #   serviceConfig = {
+  #     Type = "oneshot";
+  #     ExecStart = "${pkgs.kmod}/bin/modprobe -r mt7925e";
+  #     ExecStop = "${pkgs.kmod}/bin/modprobe mt7925e";
+  #     RemainAfterExit = true;
+  #   };
+  # };
   # systemd.services.set-resume-device = {
   #   description = "Set resume device for hibernation";
   #   wantedBy = [ "multi-user.target" ];
@@ -304,8 +304,13 @@ in {
       VISUAL = "hx";
       MOZ_ENABLE_WAYLAND = 1;
       HYPRLAND_CURSOR_SIZE = "48";
+      PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
     };
     systemPackages = with pkgs; [
+      winboat
+      freerdp3
+      pkg-config
+      playwright 
       vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       wget
       roc
@@ -365,11 +370,12 @@ in {
       corefonts
       helix
       openssl
+      openssl.dev
       waylock
       hypridle
       hyprlock
       file
-      # obsidian-wayland
+      obsidian
       wofi
       rofi
       networkmanagerapplet
@@ -399,6 +405,11 @@ in {
       black
       ruff
       rustup
+      # cargo
+      # # ARM64 standard library for cross-compilation
+      # pkgsCross.aarch64-multiplatform.stdenv.cc
+      # # Cross-compilation support for Rust
+      # pkgsCross.aarch64-multiplatform.rustc
       mosquitto
       expressvpn
       julia-bin
@@ -433,8 +444,8 @@ in {
       tailwindcss
       tailwindcss-language-server
       # (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
-      aarch64-linux-musl.buildPackages.stdenv.cc
-      aarch64-linux.buildPackages.stdenv.cc
+      # aarch64-linux-musl.buildPackages.stdenv.cc
+      # aarch64-linux.buildPackages.stdenv.cc
       evcxr #rust repl
       taplo #toml formatter & lsp
       # cargo-deny
@@ -446,12 +457,12 @@ in {
       # cargo-tarpaulin
       # cargo-cross
       # cargo-zigbuild
-      cargo-nextest
+      # cargo-nextest
       # cargo-spellcheck
       # cargo-modules
-      cargo-bloat
+      # cargo-bloat
       # cargo-unused-features
-      cargo-lambda
+      # cargo-lambda
       bacon
       grim
       slurp
@@ -533,7 +544,7 @@ in {
     };
     nvidia = {
       modesetting.enable = true;
-      powerManagement.enable = false;
+      powerManagement.enable = true;
       powerManagement.finegrained = false;
       open = true;
       nvidiaSettings = true;
