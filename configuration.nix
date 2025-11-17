@@ -37,7 +37,7 @@ in {
   boot.loader.efi.canTouchEfiVariables = true;
   boot.blacklistedKernelModules = [ "amdgpu" ];
   boot.kernelPackages = pkgs.linuxPackages;  #_latest; #pkgs.linuxPackages_6_10;pkgs.linuxPackages;   
-  boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "mem_sleep_default=s2idle" ];
+  boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "usb-storage.delay_use=0" "mem_sleep_default=s2idle" ];
   # boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "resume=UUID=1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba" "resume_offset=21792768" "pm_freeze_timeout=30000"]; 
   # boot.resumeDevice = "/dev/disk/by-uuid/1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba";
   #Boot entries limit
@@ -55,8 +55,9 @@ in {
   networking.networkmanager.enable = true;
 
   networking.extraHosts = ''
-    127.0.0.1 me2-staging.cdebroewy8nl.eu-central-1.rds.amazonaws.com apps-db01-staging.cdebroewy8nl.eu-central-1.rds.amazonaws.com kong-db-staging.cdebroewy8nl.eu-central-1.rds.amazonaws.com
+    # 127.0.0.1 me2-staging.cdebroewy8nl.eu-central-1.rds.amazonaws.com apps-db01-staging.cdebroewy8nl.eu-central-1.rds.amazonaws.com kong-db-staging.cdebroewy8nl.eu-central-1.rds.amazonaws.com
     # 18.196.43.109 cvpn-endpoint-055b8f04189000449.prod.clientvpn.eu-central-1.amazonaws.com
+    127.0.0.1 meter.ed-staging
   '';
 
   # Set your time zone.
@@ -160,14 +161,25 @@ in {
 
   xdg.portal = {
     enable = true;
-    config.common.default = "*";
-    # wlr.enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal
+    # config.common.default = "*";
+    extraPortals = [ 
       pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal-wlr
-      # pkgs.xdg-desktop-portal-hyprland
     ];
+    config = {
+      common = {
+        default = [ "hyprland" "gtk" ];
+      };
+      hyprland = {
+        default = [ "hyprland" "gtk" ];
+      };
+    };
+    # wlr.enable = true;
+    # extraPortals = [
+    #   pkgs.xdg-desktop-portal
+    #   pkgs.xdg-desktop-portal-gtk
+    #   pkgs.xdg-desktop-portal-wlr
+    #   # pkgs.xdg-desktop-portal-hyprland
+    # ];
   };
 
   systemd.services."getty@tty1".enable = false;
@@ -231,6 +243,8 @@ in {
       # Additional Voyager rules
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE="0666", TAG+="uaccess"
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
+
+      ACTION=="add", SUBSYSTEM=="usb", DEVPATH=="*/usb3/3-12", ATTR{authorized}="0"
     '';
   };
     
@@ -306,13 +320,19 @@ in {
       HYPRLAND_CURSOR_SIZE = "48";
       PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
     };
+    etc."tsocks.conf".text = ''
+      server = 127.0.0.1
+      server_port = 1080
+      server_type = 5
+    '';
     systemPackages = with pkgs; [
       winboat
       freerdp3
       pkg-config
-      playwright 
       vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       wget
+      v4l-utils    # provides v4l2-ctl
+      ffmpeg
       roc
       claude-code
       gemini-cli
@@ -325,6 +345,7 @@ in {
       nix-ld
       tree
       openconnect
+      dbeaver-bin
       openvpn
       zed-editor
       gnumake
@@ -337,14 +358,15 @@ in {
       terraform-ls
       adwaita-qt
       maven
-      # google-chrome
-      (google-chrome.override {
-        commandLineArgs = [
-          "--disable-webusb-security"
-        ];
-      })
+      google-chrome
+      # (google-chrome.override {
+      #   commandLineArgs = [
+      #     "--disable-webusb-security"
+      #   ];
+      # })
       lxappearance
       postgresql
+      tsocks
       fwupd
       terraform
       ssm-session-manager-plugin
@@ -361,6 +383,7 @@ in {
       unzip
       alsa-utils
       bibata-cursors
+      privoxy
       dig
       bun
       qemu
@@ -422,6 +445,7 @@ in {
       xdg-desktop-portal
       xdg-desktop-portal-wlr
       xdg-utils
+      ssm-session-manager-plugin
       pavucontrol
       pipewire
       lshw
@@ -443,9 +467,6 @@ in {
       zoom-us
       tailwindcss
       tailwindcss-language-server
-      # (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
-      # aarch64-linux-musl.buildPackages.stdenv.cc
-      # aarch64-linux.buildPackages.stdenv.cc
       evcxr #rust repl
       taplo #toml formatter & lsp
       # cargo-deny
@@ -484,9 +505,32 @@ in {
       nodePackages.webpack 
       nodePackages.bash-language-server
       awscli2
+      nodePackages_latest.aws-cdk
       poetry
       man
       zip
+      # Add all the libraries Playwright needs
+      glib
+      nss
+      nspr
+      dbus
+      atk
+      at-spi2-atk
+      cups
+      expat
+      libxcb
+      libxkbcommon
+      xorg.libX11
+      xorg.libXcomposite
+      xorg.libXdamage
+      xorg.libXext
+      xorg.libXfixes
+      xorg.libXrandr
+      mesa
+      cairo
+      pango
+      systemd
+      alsa-lib
     ];
   };
 

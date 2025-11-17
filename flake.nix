@@ -4,14 +4,14 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    rust-overlay.url = "github:oxalica/rust-overlay";
+    # rust-overlay.url = "github:oxalica/rust-overlay";
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs"; 
     winboat.url = "github:TibixDev/winboat";
   };
 
-  outputs = { self, nixpkgs, hyprland, home-manager, rust-overlay, winboat, ... } @ inputs:
+  outputs = { self, nixpkgs, hyprland, home-manager, winboat, ... } @ inputs:
     let
       user = "sla";
       system = "x86_64-linux";
@@ -28,16 +28,16 @@
             {
               nixpkgs.config.allowUnfree = true;
               nixpkgs.overlays = [
-                rust-overlay.overlays.default
+                # rust-overlay.overlays.default
                 (final: prev: {
                   winboat = winboat.packages.${prev.system}.winboat;
                 })
               ];
             }
             ./configuration.nix 
-            ({ pkgs, ... }: {
-            environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
-            })
+            # ({ pkgs, ... }: {
+            # environment.systemPackages = [ pkgs.rust-bin.stable.latest.default ];
+            # })
             hyprland.nixosModules.default
             {
               programs.hyprland = {

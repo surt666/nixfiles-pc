@@ -8,8 +8,10 @@ let
   hypridleConf = pkgs.writeText "hypridle.conf" ''
     general {
         lock_cmd = pidof hyprlock || hyprlock       # avoid starting multiple hyprlock instances.
-        before_sleep_cmd = loginctl lock-session && systemctl start nvidia-suspend   # lock before suspend.
-        after_sleep_cmd = systemctl start nvidia-resume && hyprctl dispatch dpms on  # to avoid having to press a key twice to turn on the display.
+        before_sleep_cmd = loginctl lock-session   # lock before suspend.
+        after_sleep_cmd = hyprctl dispatch dpms on  # to avoid having to press a key twice to turn on the display.
+        # before_sleep_cmd = loginctl lock-session && systemctl start nvidia-suspend   # lock before suspend.
+        # after_sleep_cmd = systemctl start nvidia-resume && hyprctl dispatch dpms on  # to avoid having to press a key twice to turn on the display.
     }
 
     # Screenlock
@@ -143,6 +145,8 @@ in
     vlc
     # go_1_23
     myGo
+    proxychains-ng
+    tmux
     gopls
     viewnior
     swaybg
@@ -214,6 +218,13 @@ in
     ".go-env.nu".text = ''
       $env.GOPATH = $"($env.HOME)/go"
       $env.PATH = ($env.PATH | split row (char esep) | append $"($env.GOPATH)/bin" | uniq)
+    '';
+    ".proxychains/proxychains.conf".text = ''
+      strict_chain
+      proxy_dns
+    
+      [ProxyList]
+      socks5 127.0.0.1 1080
     '';
     ".config/hypr/hypridle.conf".source = hypridleConf;
     ".config/hypr/hyprlock.conf".source = hyprlockConf;
@@ -823,6 +834,19 @@ in
       package = myGo;
       env.GOPATH = "go";
     };
+    ssh = {
+      enable = true;
+      matchBlocks = {
+        "ssm-bastion" = {
+          hostname = "i-0e921f786eb2d6ba0";
+          user = "ssm-user";
+          proxyCommand = ''sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p' --region eu-central-1"'';
+          dynamicForwards = [{ port = 1080; }];
+          serverAliveInterval = 60;
+          serverAliveCountMax = 3;
+        };
+      };
+    };
     alacritty = {
       enable = true;
       settings = {
@@ -959,6 +983,11 @@ in
           carapace $spans.0 nushell ...$spans | from json
         }
         def --env cbp [] { wl-paste | lines | parse "export {name}=\"{value}\"" | transpose --ignore-titles -r -d | load-env }
+        def curl-proxy [...args] {
+          with-env {HTTP_PROXY: "http://localhost:8118", http_proxy: "http://localhost:8118"} {
+            curl ...$args
+          }
+        }
         $env.config = {
           show_banner: false,
           completions: {
