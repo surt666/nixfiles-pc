@@ -335,6 +335,7 @@ in {
       ffmpeg
       roc
       claude-code
+      pnpm
       gemini-cli
       bun
       coreutils
@@ -365,6 +366,7 @@ in {
       #   ];
       # })
       lxappearance
+        php
       postgresql
       tsocks
       fwupd

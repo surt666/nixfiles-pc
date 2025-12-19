@@ -934,6 +934,7 @@ in
     zoxide = {
       enable = true;
       enableBashIntegration = true;
+      enableFishIntegration = true;
       enableNushellIntegration = true;
       options = ["--cmd cd"];
     };
@@ -1030,7 +1031,47 @@ in
     };  
     fish = {
       enable = true;
-      
+      shellAliases = {
+        vi = "hx";
+        vim = "hx";
+        nano = "hx";
+        ll = "ls -al";
+        switchhypr = "sudo nixos-rebuild switch --impure --flake .";
+        switchuhypr = "sudo nixos-rebuild switch --impure --upgrade --flake .";
+        zl = "zellij list-sessions";
+        za = "zellij attach";
+        pj = "npx projen";
+      };
+      functions = {
+        "cbp" = ''
+          wl-paste | while read -l line
+              if string match -q "export *=*" -- $line
+                  set parts (string split '=' (string replace 'export ' "" $line))
+                  set -gx $parts[1] (string trim -c '"' -- $parts[2])
+              end
+          end
+        '';
+        "curl-proxy" = ''
+          env HTTP_PROXY="http://localhost:8118" http_proxy="http://localhost:8118" curl $argv
+        '';
+        "start_zellij" = ''
+          if not set -q ZELLIJ
+            if set -q ZELLIJ_AUTO_ATTACH; and test "$ZELLIJ_AUTO_ATTACH" = "true"
+              zellij attach -c
+            else
+              zellij
+            end
+
+            if set -q ZELLIJ_AUTO_EXIT; and test "$ZELLIJ_AUTO_EXIT" = "true"
+              exit
+            end
+          end
+        '';
+      };
+      interactiveShellInit = ''
+        set -p fish_user_paths "/home/${user}/.apps" "/home/${user}/.npm" "/home/${user}/.npm/bin" "/home/${user}/.npm/lib" "/home/${user}/.local/bin" "/home/${user}/.cargo/bin"
+        start_zellij
+      '';
     };
 
     bash = {
@@ -1096,8 +1137,11 @@ in
       theme = "nord-oneline.rasi"; 
     };
 
-    carapace.enable = true;
-    carapace.enableNushellIntegration = true;
+    carapace = {
+      enable = true;
+      enableNushellIntegration = true;
+      enableFishIntegration = true;
+    };
 
     starship = { 
       enable = true;
