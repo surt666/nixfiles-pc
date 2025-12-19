@@ -228,7 +228,7 @@ in {
     isNormalUser = true;
     description = "Steen Larsen";
     extraGroups = [ "plugdev" "networkmanager" "wheel" "audio" "video" "input" "lp" "docker"];
-    shell = pkgs.nushell;
+    shell = pkgs.fish;
   };
 
   services.udev = {
