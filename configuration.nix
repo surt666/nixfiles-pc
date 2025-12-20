@@ -229,6 +229,7 @@ in {
     description = "Steen Larsen";
     extraGroups = [ "plugdev" "networkmanager" "wheel" "audio" "video" "input" "lp" "docker"];
     shell = pkgs.fish;
+    ignoreShellProgramCheck = true;
   };
 
   services.udev = {
@@ -296,7 +297,7 @@ in {
     source-code-pro
     font-awesome
     corefonts
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
     nerd-fonts.jetbrains-mono
@@ -327,20 +328,20 @@ in {
     '';
     systemPackages = with pkgs; [
       winboat
-      freerdp3
+      freerdp
       pkg-config
       vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       wget
       v4l-utils    # provides v4l2-ctl
       ffmpeg
-      roc
+      # roc  # Temporarily disabled: failing tests
       claude-code
       pnpm
       gemini-cli
       bun
       coreutils
       busybox
-      biglybt
+      # biglybt  # Temporarily disabled: swt dependency is broken
       gnugrep
       gawk
       nix-ld
@@ -366,7 +367,9 @@ in {
       #   ];
       # })
       lxappearance
-        php
+      php
+      aws-sam-cli
+      clojure
       postgresql
       tsocks
       fwupd
@@ -391,7 +394,7 @@ in {
       qemu
       lldb
       firefox
-      vistafonts
+      vista-fonts
       corefonts
       helix
       openssl
@@ -453,7 +456,7 @@ in {
       lshw
       hyprcursor
       zig
-      glxinfo
+      mesa-demos
       brightnessctl
       pulseaudio
       pamixer
@@ -504,7 +507,7 @@ in {
       # nodePackages.eslint
       nodePackages.typescript
       # vscode-langservers-extracted
-      nodePackages.webpack 
+      # nodePackages.webpack  # Removed: should be imported in JS projects, not as system package
       nodePackages.bash-language-server
       awscli2
       nodePackages_latest.aws-cdk
