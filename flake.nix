@@ -5,7 +5,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # rust-overlay.url = "github:oxalica/rust-overlay";
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    # Pin to stable commit from Dec 18 before --watchdog-fd breakage
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?rev=315806f59816aacdbf7c66aaeaa0e49d3a33a66d&submodules=1";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };

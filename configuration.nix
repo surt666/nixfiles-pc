@@ -75,14 +75,33 @@ in {
   services.acpid.enable = true;
   hardware.acpilight.enable = true;
   # Configure keymap in X11
+  # Override Hyprland session to use Hyprland directly instead of start-hyprland
+  services.displayManager.sessionPackages = [
+    (pkgs.writeTextFile {
+      name = "hyprland-session";
+      destination = "/share/wayland-sessions/hyprland.desktop";
+      text = ''
+        [Desktop Entry]
+        Name=Hyprland
+        Comment=An intelligent dynamic tiling Wayland compositor
+        Exec=Hyprland
+        Type=Application
+        DesktopNames=Hyprland
+        Keywords=tiling;wayland;compositor;
+      '';
+      passthru.providedSessions = [ "hyprland" ];
+    })
+  ];
+
   services = {
     libinput.enable = true;
     displayManager = {
+      defaultSession = "hyprland";
+      autoLogin.enable = true;
+      autoLogin.user = "sla";
       sddm = {
         enable = true;
         wayland.enable = true;  # For Hyprland
-    # autoLogin.enable = true;
-    # autoLogin.user = "sla";
       };
     };
 
