@@ -83,10 +83,10 @@
     
     # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
     input {
-        kb_layout = us,dk
-        kb_variant = 
+        kb_layout = dk,us
+        kb_variant = nodeadkeys
         kb_model =
-        kb_options = grp:alt_space_toggle 
+        kb_options = grp:alt_space_toggle
         kb_rules =
 
         follow_mouse = 1

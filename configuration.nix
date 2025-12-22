@@ -66,7 +66,7 @@ in {
   # Select internationalisation properties.
   i18n.extraLocales = [ "en_US.UTF-8/UTF-8" "da_DK.UTF-8/UTF-8" ];
 
-  i18n.defaultLocale = "en_US.UTF-8"; # "da_DK.UTF-8";
+  i18n.defaultLocale = "da_DK.UTF-8";
 
   # swapDevices = [
   #   { device = "/swapfile"; }
@@ -108,9 +108,7 @@ in {
   # X server configuration for i3
     xserver = {
       enable = true;
-      xkb.layout = "dk";
-      # xkbVariant = "dvorak";
-      # xkbOptions = "grp:alt_shift_toggle";
+      xkb.layout = "eu";
       videoDrivers = [ "nvidia" ];
       windowManager.i3 = {
         enable = true;
@@ -127,7 +125,7 @@ in {
 
   # Configure console keymap
   # console.keyMap = "dvorak";
-  console.keyMap = "dk-latin1";
+  # console.keyMap = "dk-latin1";
   # console.useXkbConfig = true;
 
   services.gnome.gnome-keyring.enable = true;
@@ -409,6 +407,9 @@ in {
       bibata-cursors
       privoxy
       dig
+      scala
+      metals
+      sbt
       bun
       qemu
       lldb
