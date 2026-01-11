@@ -366,7 +366,6 @@ in {
       openconnect
       dbeaver-bin
       openvpn
-      zed-editor
       gnumake
       uv
       rye
@@ -476,6 +475,7 @@ in {
       lshw
       hyprcursor
       zig
+      zls
       mesa-demos
       brightnessctl
       pulseaudio
