@@ -1,10 +1,7 @@
 {config, pkgs, lib, user, home-manager, inputs, ... }:
 let
   myGo = pkgs.go;
-  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz";
-  nix-alien-pkgs = import (
-    builtins.fetchTarball "https://github.com/thiagokokada/nix-alien/tarball/master"
-  ) { };
+  # nix-alien is now provided by the flake input
   hypridleConf = pkgs.writeText "hypridle.conf" ''
     general {
         lock_cmd = pidof hyprlock || hyprlock       # avoid starting multiple hyprlock instances.
@@ -161,9 +158,9 @@ in
       # export XDG_RUNTIME_DIR=/run/user/$(id -u)
       wlr-randr --output DP-2 --custom-mode 5120x2160@60Hz --pos -2560,0
     '')
-  ] ++ (with nix-alien-pkgs; [
-    nix-alien
-  ]);
+  ] ++ [
+    inputs.nix-alien.packages.${pkgs.system}.nix-alien
+  ];
   home.pointerCursor = {
     gtk.enable = true;
     package = pkgs.bibata-cursors;
@@ -443,7 +440,14 @@ in
       diagnostic-severity = "info"
       language-servers = ["rust"]
 
-      
+      [[language]]
+      name = "zig"
+      file-types = ["zig", "zon"]
+      roots = ["build.zig", "build.zig.zon"]
+      auto-format = true
+      indent = { tab-width = 4, unit = "    " }
+      language-servers = ["zls"]
+
       [[language]]
       name = "python"
       scope = "source.python"
@@ -551,6 +555,7 @@ in
       language-servers = ["elixir-ls"]
       indent = { tab-width = 2, unit = "  " }
       auto-format = true
+      formatter = { command = "mix", args = ["format", "-"] }
 
       # HEEx (HTML+EEx) Templates
       [[language]]
@@ -670,6 +675,9 @@ in
       cargo.features = "all" 
       completion.addCallParenthesis = true 
 
+      [language-server.zls]
+      command = "zls"
+      
       [language-server.clojure-lsp]
       command = "clojure-lsp"
 

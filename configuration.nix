@@ -382,6 +382,10 @@ in {
       #     "--disable-webusb-security"
       #   ];
       # })
+      redis
+      questdb
+      beam28Packages.elixir_1_20
+      beam28Packages.elixir-ls
       lxappearance
       php
       aws-sam-cli
@@ -632,6 +636,35 @@ in {
   services.gvfs.enable = true;
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+
+  # Enable Redis server
+  services.redis.servers."" = {
+    enable = true;
+    port = 6379;
+  };
+
+  # Enable QuestDB
+  systemd.services.questdb = {
+    description = "QuestDB Time Series Database";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.jdk17}/bin/java -jar ${pkgs.questdb}/share/java/questdb.jar -d /var/lib/questdb";
+      Restart = "on-failure";
+      User = "questdb";
+      Group = "questdb";
+      StateDirectory = "questdb";
+      WorkingDirectory = "/var/lib/questdb";
+    };
+  };
+
+  users.users.questdb = {
+    isSystemUser = true;
+    group = "questdb";
+    description = "QuestDB service user";
+  };
+
+  users.groups.questdb = {};
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
