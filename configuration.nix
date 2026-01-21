@@ -382,7 +382,7 @@ in {
       #     "--disable-webusb-security"
       #   ];
       # })
-      redis
+      valkey
       questdb
       beam28Packages.elixir_1_20
       beam28Packages.elixir-ls
@@ -638,10 +638,44 @@ in {
   services.openssh.enable = true;
 
   # Enable Redis server
-  services.redis.servers."" = {
-    enable = true;
-    port = 6379;
+  systemd.services.valkey = {
+    description = "Valkey Server";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    
+    serviceConfig = {
+      Type = "notify";
+      ExecStart = "${pkgs.valkey}/bin/valkey-server /etc/valkey/valkey.conf";
+      Restart = "always";
+      User = "valkey";
+      Group = "valkey";
+      RuntimeDirectory = "valkey";
+      StateDirectory = "valkey";
+      WorkingDirectory = "/var/lib/valkey";
+    };
   };
+
+  users.users.valkey = {
+    isSystemUser = true;
+    group = "valkey";
+    description = "Valkey server user";
+  };
+
+  users.groups.valkey = {};
+
+  environment.etc."valkey/valkey.conf".text = ''
+    bind 127.0.0.1
+    port 6379
+    dir /var/lib/valkey
+    
+    # Add any other config you need:
+    # requirepass yourpassword
+    # maxmemory 256mb
+    # maxmemory-policy allkeys-lru
+  '';
+  # services.valkey = {
+  #   servers."".enable = true;
+  # };
 
   # Enable QuestDB
   systemd.services.questdb = {
