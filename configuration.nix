@@ -93,6 +93,8 @@ in {
     })
   ];
 
+  services.mullvad-vpn.enable = true;
+
   services = {
     libinput.enable = true;
     displayManager = {
@@ -266,17 +268,17 @@ in {
     '';
   };
     
-  # services.plex = {
-  #   enable = true;
-  #   openFirewall = true;  # Opens required ports in firewall
+  services.plex = {
+    enable = true;
+    openFirewall = true;  # Opens required ports in firewall
     
-  #   # Optional: specify user/group
-  #   user = "plex";
-  #   group = "plex";
+    # Optional: specify user/group
+    user = "plex";
+    group = "plex";
     
-  #   # Optional: configure data directory
-  #   dataDir = "/var/lib/plex";
-  # };
+    # Optional: configure data directory
+    dataDir = "/var/lib/plex";
+  };
 
   # Create persistent directory for Plex data
   systemd.tmpfiles.rules = [
