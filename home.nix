@@ -136,6 +136,7 @@ in
   home.stateVersion = "25.05";
   home.packages = with pkgs; [ 
     htop 
+    btop
     starship
     # teams-for-linux
     cups-brother-hll3230cdw
@@ -802,7 +803,8 @@ in
       feature_unicode_input = false
 
       [language-server.elixir-ls]
-      command = "elixir-ls"
+      command = "/home/sla/projects/elixir-ls/release/language_server.sh"
+      # command = "elixir-ls"
       config = { elixirLS = { dialyzerEnabled = true, fetchDeps = false, suggestSpecs = true } }
   '';
   };
