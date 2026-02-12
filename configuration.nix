@@ -95,20 +95,20 @@ in {
 
   services.mullvad-vpn.enable = true;
 
-  networking.wg-quick.interfaces = {
-    wg-mullvad = {
-      address = ["10.70.251.138/32" "fc00:bbbb:bbbb:bb01::7:fb89/128" ];
-      dns = [ "100.64.0.23" ]; # mullvad public dns
-      privateKeyFile = "/root/wireguard-keys/mullvad/wg-mullvad";
-      peers = [
-        {
-          publicKey = "0qSP0VxoIhEhRK+fAHVvmfRdjPs2DmmpOCNLFP/7cGw=";
-          allowedIPs = ["0.0.0.0/0" ]; # Only send communication through mullvad if it is in the range of the given ips, allows for split tunneling
-          endpoint = "193.32.248.66:51820"; # my selected mullvad enpoint
-        }
-      ];
-    };
-  };
+  # networking.wg-quick.interfaces = {
+  #   wg-mullvad = {
+  #     address = ["10.70.251.138/32" "fc00:bbbb:bbbb:bb01::7:fb89/128" ];
+  #     dns = [ "100.64.0.23" ]; # mullvad public dns
+  #     privateKeyFile = "/root/wireguard-keys/mullvad/wg-mullvad";
+  #     peers = [
+  #       {
+  #         publicKey = "0qSP0VxoIhEhRK+fAHVvmfRdjPs2DmmpOCNLFP/7cGw=";
+  #         allowedIPs = ["0.0.0.0/0" ]; # Only send communication through mullvad if it is in the range of the given ips, allows for split tunneling
+  #         endpoint = "193.32.248.66:51820"; # my selected mullvad enpoint
+  #       }
+  #     ];
+  #   };
+  # };
 
   services = {
     libinput.enable = true;
@@ -408,7 +408,7 @@ in {
       #   ];
       # })
       valkey
-      questdb
+      clickhouse
       beam28Packages.elixir_1_20
       beam28Packages.elixir-ls
       lxappearance
