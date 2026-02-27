@@ -32,6 +32,7 @@
 
     exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 
     exec-once = systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DBUS_SESSION_BUS_ADDRESS
+    exec-once = ~/.config/hypr/scripts/move-sharing-popup.sh
 
     # Screen Sharing
     exec-once = ~/.nixfiles/scripts/screensharing.sh

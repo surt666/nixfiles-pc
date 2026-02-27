@@ -3,7 +3,7 @@
   description = "my flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/4ee14d2120519e18b3a8c15268d58232c8448920";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # rust-overlay.url = "github:oxalica/rust-overlay";
     # Pin to stable commit from Dec 18 before --watchdog-fd breakage
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?rev=315806f59816aacdbf7c66aaeaa0e49d3a33a66d&submodules=1";

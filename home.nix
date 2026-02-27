@@ -213,6 +213,19 @@ in
     "$GOPATH/bin"
   ];
   home.file = {
+    ".config/hypr/scripts/move-sharing-popup.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        while true; do
+          addr=$(${pkgs.hyprland}/bin/hyprctl clients -j | ${pkgs.jq}/bin/jq -r '.[] | select(.title | test("deler din skærm")) | .address' 2>/dev/null)
+          if [ -n "$addr" ]; then
+            ${pkgs.hyprland}/bin/hyprctl dispatch movetoworkspacesilent 9,address:$addr
+          fi
+          sleep 1
+        done
+      '';
+    };
     ".go-env.nu".text = ''
       $env.GOPATH = $"($env.HOME)/go"
       $env.PATH = ($env.PATH | split row (char esep) | append $"($env.GOPATH)/bin" | uniq)

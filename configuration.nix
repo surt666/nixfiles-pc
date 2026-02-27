@@ -284,7 +284,7 @@ in {
   };
     
   services.plex = {
-    enable = true;
+    enable = false;
     openFirewall = true;  # Opens required ports in firewall
     
     # Optional: specify user/group
