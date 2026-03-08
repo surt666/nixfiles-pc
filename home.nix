@@ -859,6 +859,7 @@ in
     };
     ssh = {
       enable = true;
+      enableDefaultConfig = false;
       matchBlocks = {
         "ssm-bastion" = {
           hostname = "i-0e921f786eb2d6ba0";

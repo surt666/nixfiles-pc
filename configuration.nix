@@ -297,8 +297,6 @@ in {
 
    services.qbittorrent = {
     enable = true;
-    user = "plex";
-    group = "plex";
     openFirewall = true;
     webuiPort = 8080;
   };
@@ -422,7 +420,7 @@ in {
       ssm-session-manager-plugin
       jq
       libz
-      xorg.libXext
+      libxext
       appimage-run
       rdesktop
       git
@@ -512,7 +510,7 @@ in {
       pamixer
       playerctl
       cava
-      xorg.xev
+      xev
       evtest
       gcc13
       stdenv.cc.cc.lib
@@ -575,12 +573,12 @@ in {
       expat
       libxcb
       libxkbcommon
-      xorg.libX11
-      xorg.libXcomposite
-      xorg.libXdamage
-      xorg.libXext
-      xorg.libXfixes
-      xorg.libXrandr
+      libx11
+      libxcomposite
+      libxdamage
+      libxext
+      libxfixes
+      libxrandr
       mesa
       cairo
       pango
