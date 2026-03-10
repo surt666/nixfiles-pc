@@ -377,6 +377,8 @@ in {
       # roc  # Temporarily disabled: failing tests
       claude-code
       pnpm
+      obs-studio
+      kdePackages.kdenlive
       gemini-cli
       bun
       coreutils
