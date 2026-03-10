@@ -1,8 +1,7 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -i python -p python3 python3Packages.requests
+#!/usr/bin/env python3
 
 import json
-import requests
+import subprocess
 from datetime import datetime
 
 WEATHER_CODES = {
@@ -59,7 +58,10 @@ WEATHER_CODES = {
 data = {}
 
 
-weather = requests.get("https://wttr.in/haslev?format=j1").json()
+weather = json.loads(subprocess.run(
+    ["curl", "-s", "https://wttr.in/haslev?format=j1"],
+    capture_output=True, text=True, check=True
+).stdout)
 
 
 def format_time(time):

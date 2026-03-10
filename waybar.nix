@@ -412,7 +412,7 @@
         format-icons = [ "" "" "" ];
       };
       "custom/weather" = {
-        exec = "nix-shell ~/.nixfiles/scripts/weather.py";
+        exec = "python3 ~/.nixfiles/scripts/weather.py";
         restart-interval = 300;
         return-type = "json";
       };
