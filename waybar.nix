@@ -78,12 +78,10 @@
       }
 
       #clock,
-      #battery,
       #cpu,
       #memory,
       #disk,
       #temperature,
-      #backlight,
       #network,
       #pulseaudio,
       #wireplumber,
@@ -327,17 +325,6 @@
       "hyprland/language" = {
         format = "{short}";
       };
-       "backlight" = {
-        device = "intel_backlight";
-        format = "{icon}";
-        tooltip = true;
-        format-alt = "<small>{percent}%</small>";
-        format-icons = ["󱩎" "󱩏" "󱩐" "󱩑" "󱩒" "󱩓" "󱩔" "󱩕" "󱩖" "󰛨"];
-        on-scroll-up = "brightnessctl set 1%+";
-        on-scroll-down = "brightnessctl set 1%-";
-        smooth-scrolling-threshold = "2400";
-        tooltip-format = "Brightness {percent}%";
-      };
       "mpris" = {
         format = "{player_icon} {title}";
         format-paused = " {status_icon} <i>{title}</i>";
@@ -353,19 +340,6 @@
       tray = { 
         # spacing = 10; 
         icon-size = 30; 
-      };
-      battery = {
-        format = "{capacity}% {icon}";
-        format-warning = "{icon}";
-        format-critical = "{icon}";
-        format-alt = "{time} {icon}";
-        format-charging = "{capacity}% ";
-        format-icons = [ "" "" "" "" "" ];
-        format-plugged = "{capacity}% ";
-        states = {
-          critical = 15;
-          warning = 30;
-        };
       };
       clock = {
         format-alt = "{:%Y-%m-%d}";

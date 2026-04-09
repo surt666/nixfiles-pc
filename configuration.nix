@@ -367,7 +367,7 @@ in {
       server_type = 5
     '';
     systemPackages = with pkgs; [
-      winboat
+      # winboat  # Temporarily disabled: Go 1.26.1 mingw cross-compilation broken
       freerdp
       pkg-config
       vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
@@ -553,14 +553,14 @@ in {
       # ruff-lsp
       eslint_d
       emmet-language-server
-      nodePackages.typescript-language-server
+      typescript-language-server
       # nodePackages.eslint
-      nodePackages.typescript
+      typescript
       # vscode-langservers-extracted
       # nodePackages.webpack  # Removed: should be imported in JS projects, not as system package
-      nodePackages.bash-language-server
+      bash-language-server
       awscli2
-      nodePackages_latest.aws-cdk
+      aws-cdk-cli
       poetry
       man
       zip
@@ -624,6 +624,7 @@ in {
       libgcc
       stdenv.cc.cc
       openssl
+      icu
     ];
   };
   

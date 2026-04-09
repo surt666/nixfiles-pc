@@ -58,10 +58,18 @@ WEATHER_CODES = {
 data = {}
 
 
-weather = json.loads(subprocess.run(
-    ["curl", "-s", "https://wttr.in/haslev?format=j1"],
-    capture_output=True, text=True, check=True
-).stdout)
+try:
+    result = subprocess.run(
+        ["curl", "-s", "https://wttr.in/haslev?format=j1"],
+        capture_output=True, text=True, check=True, timeout=10
+    )
+    weather = json.loads(result.stdout)
+    if "current_condition" not in weather:
+        print(json.dumps({"text": "⛅ N/A", "tooltip": "Weather data unavailable"}))
+        exit(0)
+except Exception:
+    print(json.dumps({"text": "⛅ N/A", "tooltip": "Weather fetch failed"}))
+    exit(0)
 
 
 def format_time(time):
