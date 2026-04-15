@@ -134,8 +134,9 @@ in
   home.username = "${user}";
   home.homeDirectory = "/home/${user}";
   home.stateVersion = "25.05";
-  home.packages = with pkgs; [ 
-    htop 
+  home.packages = with pkgs; [
+    xdg-desktop-portal-gtk
+    htop
     btop
     starship
     # teams-for-linux

@@ -19,11 +19,16 @@ in {
       # <home-manager/nixos>
     ];
 
-  # nixpkgs.overlays = [
-  #   (self: super: {
-  #     obsidian-wayland = super.obsidian.override { electron = self.electron_38; };
-  #   })
-  # ];
+  nixpkgs.overlays = [
+    (self: super: {
+      xdg-desktop-portal-gtk = super.xdg-desktop-portal-gtk.overrideAttrs (old: {
+        postInstall = (old.postInstall or "") + ''
+          substituteInPlace $out/share/xdg-desktop-portal/portals/gtk.portal \
+            --replace-fail "UseIn=gnome" "UseIn=gnome;Hyprland"
+        '';
+      });
+    })
+  ];
 
   # nixpkgs.config = {
   #   allowBroken = true;
@@ -196,15 +201,17 @@ in {
   xdg.portal = {
     enable = true;
     # config.common.default = "*";
-    extraPortals = [ 
+    extraPortals = [
       pkgs.xdg-desktop-portal-gtk
     ];
     config = {
       common = {
         default = [ "hyprland" "gtk" ];
+        "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
       };
       hyprland = {
         default = [ "hyprland" "gtk" ];
+        "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
       };
     };
     # wlr.enable = true;
