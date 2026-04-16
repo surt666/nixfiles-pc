@@ -499,6 +499,7 @@ in {
       julia-bin
       ghc
       ocaml
+      opam
       kdePackages.sddm
       swww
       # xdg-desktop-portal-hyprland
