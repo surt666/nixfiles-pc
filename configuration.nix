@@ -381,6 +381,8 @@ in {
       wget
       v4l-utils    # provides v4l2-ctl
       ffmpeg
+      bubblewrap
+      socat
       # roc  # Temporarily disabled: failing tests
       claude-code
       pnpm
