@@ -161,7 +161,7 @@ in
       wlr-randr --output DP-2 --custom-mode 5120x2160@60Hz --pos -2560,0
     '')
   ] ++ [
-    inputs.nix-alien.packages.${pkgs.system}.nix-alien
+    inputs.nix-alien.packages.${pkgs.stdenv.hostPlatform.system}.nix-alien
   ];
   home.pointerCursor = {
     gtk.enable = true;
@@ -844,6 +844,7 @@ in
       name = "Dracula";
       package = pkgs.dracula-theme;
     };
+    gtk4.theme = config.gtk.theme;
     iconTheme = {
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;
@@ -1048,7 +1049,7 @@ in
         nano = "hx";
         ll = "ls -al";
         switchhypr = "sudo nixos-rebuild switch --impure --flake .";
-        switchuhypr = "sudo nixos-rebuild switch --impure --upgrade --flake .";
+        switchuhypr = "nix flake update && sudo nixos-rebuild switch --impure --flake .";
         zl = "zellij list-sessions";
         za = "zellij attach";
         pj="npx projen";
@@ -1063,7 +1064,7 @@ in
         nano = "hx";
         ll = "ls -al";
         switchhypr = "sudo nixos-rebuild switch --impure --flake .";
-        switchuhypr = "sudo nixos-rebuild switch --impure --upgrade --flake .";
+        switchuhypr = "nix flake update && sudo nixos-rebuild switch --impure --flake .";
         zl = "zellij list-sessions";
         za = "zellij attach";
         pj = "npx projen";

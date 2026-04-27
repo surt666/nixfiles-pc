@@ -503,7 +503,7 @@ in {
       ocaml
       opam
       kdePackages.sddm
-      swww
+      awww
       # xdg-desktop-portal-hyprland
       xdg-desktop-portal-gtk
       xdg-desktop-portal
