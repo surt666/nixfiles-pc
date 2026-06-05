@@ -115,6 +115,14 @@ in {
   #   };
   # };
 
+  # Enable Ollama service
+  services.ollama = {
+    enable = true;
+    # Use pkgs.ollama-cuda or pkgs.ollama-rocm depending on your GPU
+    package = pkgs.ollama-cuda;
+    loadModels = [ "gemma4:31b" ]; # Pulls the 31B desktop variant
+  };
+
   services = {
     libinput.enable = true;
     displayManager = {
@@ -382,6 +390,7 @@ in {
       v4l-utils    # provides v4l2-ctl
       ffmpeg
       bubblewrap
+      worktrunk
       socat
       # roc  # Temporarily disabled: failing tests
       claude-code

@@ -214,6 +214,12 @@ in
     "$GOPATH/bin"
   ];
   home.file = {
+    ".config/helix/themes/catppuccin_mocha_md.toml".text = ''
+      inherits = "catppuccin_mocha"
+
+      "markup.strikethrough" = { modifiers = ["crossed_out"] }
+    '';
+
     ".config/hypr/scripts/move-sharing-popup.sh" = {
       executable = true;
       text = ''
@@ -1256,7 +1262,7 @@ in
       enable = true;
       defaultEditor = true;
       settings = {
-        theme = "catppuccin_mocha";
+        theme = "catppuccin_mocha_md";
         editor = {
           line-number = "relative";
           mouse = true;

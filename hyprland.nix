@@ -1,6 +1,9 @@
 {config, pkgs, lib, user, kernelPackages, nvidiaPackage, ...}:
 {
   wayland.windowManager.hyprland.enable = true;
+  # extraConfig below is hyprlang; keep that format explicitly (the home-manager
+  # default flips to "lua" at stateVersion 26.05, which would break extraConfig).
+  wayland.windowManager.hyprland.configType = "hyprlang";
   # wlr-randr to find monitors
   wayland.windowManager.hyprland.extraConfig = 
   ''
