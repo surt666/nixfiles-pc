@@ -1103,6 +1103,7 @@ in
       };
       interactiveShellInit = ''
         set -p fish_user_paths "/home/${user}/.apps" "/home/${user}/.npm" "/home/${user}/.npm/bin" "/home/${user}/.npm/lib" "/home/${user}/.local/bin" "/home/${user}/.cargo/bin"
+        ${pkgs.worktrunk}/bin/wt config shell init fish | source
         start_zellij
         test -r '/home/sla/.opam/opam-init/init.fish' && source '/home/sla/.opam/opam-init/init.fish' > /dev/null 2> /dev/null; or true
       '';
