@@ -200,6 +200,9 @@ in
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
+    # Route GTK file dialogs through xdg-desktop-portal. (Chrome ignores this var
+    # and calls the portal directly regardless.) The portal itself is fixed via
+    # the lsm= kernel param in configuration.nix — see the note there.
     GTK_USE_PORTAL = "1";
     XDG_CACHE_HOME = "\${HOME}/.cache";
     XDG_CONFIG_HOME = "\${HOME}/.config";

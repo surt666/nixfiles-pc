@@ -43,6 +43,19 @@ in {
   boot.blacklistedKernelModules = [ "amdgpu" ];
   boot.kernelPackages = pkgs.linuxPackages;  #_latest; #pkgs.linuxPackages_6_10;pkgs.linuxPackages;   
   boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "usb-storage.delay_use=0" "mem_sleep_default=s2idle" ];
+
+  # Drop "bpf" from the LSM stack (NixOS default is [ "landlock" "yama" "bpf" ]).
+  # The bpf LSM lets systemd confine user-service cgroups such that processes
+  # inside them get EACCES following the /proc/<pid>/root magic symlink (a
+  # systemd 260 / kernel 6.18 regression). xdg-desktop-portal runs as a
+  # systemd --user service and needs /proc/<caller>/root to identify the calling
+  # app; with bpf active it couldn't, so it rejected EVERY portal request
+  # ("AccessDenied: Unable to open /proc/<pid>/root") and Chrome's Google Drive /
+  # file-upload picker never appeared. (capability and ima stay enabled by the
+  # kernel regardless of this list.)
+  # mkForce: the NixOS default ([ "landlock" "yama" "bpf" ]) is a plain list
+  # definition, so a normal assignment would *concatenate* (re-adding bpf).
+  security.lsm = lib.mkForce [ "landlock" "yama" ];
   # boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "resume=UUID=1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba" "resume_offset=21792768" "pm_freeze_timeout=30000"]; 
   # boot.resumeDevice = "/dev/disk/by-uuid/1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba";
   #Boot entries limit
@@ -216,10 +229,12 @@ in {
       common = {
         default = [ "hyprland" "gtk" ];
         "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
       };
       hyprland = {
         default = [ "hyprland" "gtk" ];
         "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
       };
     };
     # wlr.enable = true;
