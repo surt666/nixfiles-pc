@@ -509,7 +509,9 @@ in
 
       [[language]]
       name = "json"
-      formatter = { command = 'prettier', args = ["--parser", "json"] }
+      auto-format = true
+      formatter = { command = "jq", args = ["."] }
+      # formatter = { command = "prettier", args = ["--parser", "json"] }
 
       [[language]]
       name = "markdown"

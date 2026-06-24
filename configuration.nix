@@ -56,7 +56,21 @@ in {
   # mkForce: the NixOS default ([ "landlock" "yama" "bpf" ]) is a plain list
   # definition, so a normal assignment would *concatenate* (re-adding bpf).
   security.lsm = lib.mkForce [ "landlock" "yama" ];
-  # boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "resume=UUID=1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba" "resume_offset=21792768" "pm_freeze_timeout=30000"]; 
+
+  # Strip CAP_SYS_NICE from the Hyprland wrapper. The hyprland module wraps the
+  # binary with `capabilities = "cap_sys_nice+ep"` (plus an implicit cap_setpcap),
+  # and Hyprland 0.52+ raises CAP_SYS_NICE into its *ambient* set so it leaks to
+  # EVERY app the compositor spawns (Chrome included). xdg-desktop-portal runs
+  # under user@.service with no caps; the capability LSM's cap_ptrace_access_check
+  # then forbids it from following /proc/<caller>/root for any caller holding a
+  # capability it lacks, so the portal rejected requests with
+  # "AccessDenied: Unable to open /proc/<pid>/root" and Chrome's file/upload picker
+  # never appeared. Proven: dropping the caller's ambient caps makes OpenFile work.
+  # capabilities = "" falls through to a plain wrapper, so /run/wrappers/bin/Hyprland
+  # still exists for SDDM but carries no caps (Hyprland just loses RT scheduling).
+  # mkForce: the hyprland module sets this as a plain (non-mkDefault) definition.
+  security.wrappers.Hyprland.capabilities = lib.mkForce "";
+  # boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "resume=UUID=1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba" "resume_offset=21792768" "pm_freeze_timeout=30000"];
   # boot.resumeDevice = "/dev/disk/by-uuid/1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba";
   #Boot entries limit
   boot.loader.systemd-boot.configurationLimit = 20;
@@ -430,7 +444,6 @@ in {
       gtk3
       qt5.qtbase
       qt5.qtwayland
-      libsForQt5.qt5.qtwayland
       terraform-ls
       adwaita-qt
       maven
