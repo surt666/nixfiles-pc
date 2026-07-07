@@ -440,6 +440,7 @@ in {
       openvpn
       gnumake
       uv
+      marp-cli
       rye
       gtk3
       qt5.qtbase
