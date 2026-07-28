@@ -143,12 +143,19 @@ in {
   # };
 
   # Enable Ollama service
-  services.ollama = {
-    enable = true;
-    # Use pkgs.ollama-cuda or pkgs.ollama-rocm depending on your GPU
-    package = pkgs.ollama-cuda;
-    loadModels = [ "gemma4:31b" ]; # Pulls the 31B desktop variant
-  };
+  # Temporarily disabled: pkgs.ollama-cuda fails to build in the current
+  # nixpkgs snapshot — its CUDA (ggml-cuda) backend can't locate `nvcc`
+  # ("CUDA Toolkit not found" / "Could not find nvcc executable in path
+  # specified by CUDAToolkit_ROOT"), which broke the whole system build.
+  # Re-enable once nixpkgs fixes the ollama-cuda CUDAToolkit_ROOT packaging,
+  # or switch to `package = pkgs.ollama;` for a CPU-only build. Note that
+  # "gemma4:31b" is not a real model tag (likely meant "gemma3").
+  # services.ollama = {
+  #   enable = true;
+  #   # Use pkgs.ollama-cuda or pkgs.ollama-rocm depending on your GPU
+  #   package = pkgs.ollama-cuda;
+  #   loadModels = [ "gemma4:31b" ]; # Pulls the 31B desktop variant
+  # };
 
   services = {
     libinput.enable = true;
@@ -434,6 +441,7 @@ in {
       gnugrep
       gawk
       nix-ld
+      sqlcmd
       tree
       openconnect
       dbeaver-bin
@@ -609,7 +617,6 @@ in {
       bash-language-server
       awscli2
       aws-cdk-cli
-      poetry
       man
       zip
       # Add all the libraries Playwright needs
