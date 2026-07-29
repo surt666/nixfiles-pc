@@ -164,6 +164,7 @@ in
     inputs.nix-alien.packages.${pkgs.stdenv.hostPlatform.system}.nix-alien
   ];
   home.pointerCursor = {
+    enable = true;
     gtk.enable = true;
     package = pkgs.bibata-cursors;
     name = "Bibata-Modern-Ice";
@@ -874,99 +875,71 @@ in
     ssh = {
       enable = true;
       enableDefaultConfig = false;
-      matchBlocks = {
+      settings = {
         "ssm-bastion" = {
-          hostname = "i-0e921f786eb2d6ba0";
-          user = "ssm-user";
-          proxyCommand = ''sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p' --region eu-central-1"'';
-          dynamicForwards = [{ port = 1080; }];
-          serverAliveInterval = 60;
-          serverAliveCountMax = 3;
+          HostName = "i-0e921f786eb2d6ba0";
+          User = "ssm-user";
+          ProxyCommand = ''sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p' --region eu-central-1"'';
+          DynamicForward = [{ port = 1080; }];
+          ServerAliveInterval = 60;
+          ServerAliveCountMax = 3;
         };
       };
     };
-    alacritty = {
+    ghostty = {
       enable = true;
+      enableFishIntegration = true;
+      enableBashIntegration = true;
       settings = {
-        window = {
-          opacity = 0.7;
-        };
-        mouse = {
-          bindings = [
-            { mouse = "Middle"; action = "Paste"; }
-            { mouse = "Left"; action = "Copy"; }
-          ];
-        };
-        scrolling = {
-          history = 5000;
-          multiplier = 3;
-        };
-        font = {
-          normal = {
-            family = "FiraCode Nerd Font";
-            style = "Regular";
-          };
-          bold = {
-            family = "FiraCode Nerd Font";
-            style = "Bold";
-          };
-          italic = {
-            family = "FiraCode Nerd Font";
-            style = "Italic";
-          };
-          size = 15.0;
-          offset = {
-            x = 1;
-            y = 1;
-          };
-        };
-        colors = {
-          primary = {
-            background = "#14151e"; 
-            foreground = "#98b0d3"; 
-            # background = "0x002b36";
-            # foreground = "0x93a1a1";
-          };
+        # window -- alacritty had a bare, translucent window on hyprland
+        background-opacity = 0.7;
+        window-decoration = "none";
+        window-padding-x = 0;
+        window-padding-y = 0;
+        # don't nag when closing a window that still has zellij attached
+        confirm-close-surface = false;
 
-          # Colors the cursor will use if `custom_cursor_colors` is true
-          cursor = {
-            text = "0x002b36";
-            cursor = "0x93a1a1";
-          };
+        font-family = "FiraCode Nerd Font";
+        font-size = 15;
+        # matches alacritty's font.offset { x = 1; y = 1; }
+        adjust-cell-width = 1;
+        adjust-cell-height = 1;
 
-          # Normal colors
-          normal = {
-            black =   "0x002b36";
-            red =     "0xdc322f";
-            green =   "0x859900";
-            yellow =  "0xb58900";
-            blue =    "0x268bd2";
-            magenta = "0x6c71c4";
-            cyan =    "0x2aa198";
-            white =   "0x93a1a1";
-          };
+        # alacritty: Left = Copy, Middle = Paste (middle-paste is default here)
+        copy-on-select = "clipboard";
 
-          # Bright colors
-          bright = {
-            black =   "0x657b83";
-            red =     "0xdc322f";
-            green =   "0x859900";
-            yellow =  "0xb58900";
-            blue =    "0x268bd2";
-            magenta = "0x6c71c4";
-            cyan =    "0x2aa198";
-            white =   "0xfdf6e3";
-          };
-
-          indexed_colors = [
-            { index = 16; color = "0xcb4b16"; }
-            { index = 17; color = "0xd33682"; }
-            { index = 18; color = "0x073642"; }
-            { index = 19; color = "0x586e75"; }
-            { index = 20; color = "0x839496"; }
-            { index = 21; color = "0xeee8d5"; }
-          ];
-        };
+        # solarized-dark palette on the custom background from alacritty
+        background = "#14151e";
+        foreground = "#98b0d3";
+        cursor-color = "#93a1a1";
+        cursor-text = "#002b36";
+        palette = [
+          # normal
+          "0=#002b36"
+          "1=#dc322f"
+          "2=#859900"
+          "3=#b58900"
+          "4=#268bd2"
+          "5=#6c71c4"
+          "6=#2aa198"
+          "7=#93a1a1"
+          # bright
+          "8=#657b83"
+          "9=#dc322f"
+          "10=#859900"
+          "11=#b58900"
+          "12=#268bd2"
+          "13=#6c71c4"
+          "14=#2aa198"
+          "15=#fdf6e3"
+          # indexed_colors
+          "16=#cb4b16"
+          "17=#d33682"
+          "18=#073642"
+          "19=#586e75"
+          "20=#839496"
+          "21=#eee8d5"
+        ];
       };
     };
     zoxide = {

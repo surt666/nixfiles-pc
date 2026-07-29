@@ -405,7 +405,7 @@ in {
     #   export PATH=$HOME/.npm:$HOME/.npm/bin:$PATH
     # '';
     variables = {
-      TERMINAL = "alacritty";
+      TERMINAL = "ghostty";
       EDITOR = "hx";
       VISUAL = "hx";
       MOZ_ENABLE_WAYLAND = 1;

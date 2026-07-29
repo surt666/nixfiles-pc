@@ -175,7 +175,7 @@
     $mainMod = SUPER
 
     # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
-    bind = $mainMod, Q, exec, alacritty  
+    bind = $mainMod, Q, exec, ghostty
     bind = $mainMod SHIFT, K, killactive,
     bind = $mainMod, S, exec, GDK_BACKEND=x11 slack 
     bind = $mainMod, T, exec, GDK_BACKEND=x11 teams-for-linux
