@@ -237,6 +237,15 @@ in
         done
       '';
     };
+    ".claude/CLAUDE.md".text = ''
+      # Reporting style
+
+      - Keep reports short and factual: the conclusion first, then the evidence.
+      - Use bullet lists and short headings, not paragraphs, so the key facts stand out.
+      - Back claims with concrete details: versions, paths, commands, exact error text.
+      - Leave out background explanations, restated context and options I won't act on.
+      - When I need to do something, put the command in a code block.
+    '';
     ".go-env.nu".text = ''
       $env.GOPATH = $"($env.HOME)/go"
       $env.PATH = ($env.PATH | split row (char esep) | append $"($env.GOPATH)/bin" | uniq)
