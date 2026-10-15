@@ -890,7 +890,16 @@ in
       enable = true;
       enableFishIntegration = true;
       enableBashIntegration = true;
+      # No systemd unit / D-Bus activation: hyprland launches ghostty directly
+      # (bind SUPER+Q), so the unit never activates, but its presence is what
+      # makes `gtk-single-instance = detect` resolve to "enabled".
+      systemd.enable = false;
       settings = {
+        # One process per window, like alacritty. In single-instance mode the
+        # daemon serves every later window from the first process, and those
+        # windows come up as empty frames with no shell.
+        gtk-single-instance = false;
+
         # window -- alacritty had a bare, translucent window on hyprland
         background-opacity = 0.7;
         window-decoration = "none";
@@ -1080,6 +1089,16 @@ in
         '';
       };
       interactiveShellInit = ''
+        # Leave the alternate screen after every command. A TUI that exits
+        # without emitting \e[?1049l strands the zellij pane on the alternate
+        # screen, and zellij translates the mouse wheel into arrow keys for
+        # alternate-screen panes -- so the wheel walks command history instead
+        # of scrolling the pane. Sending this on the normal screen is a no-op.
+        # Must live here, not in `functions`: those are autoloaded lazily, so
+        # an --on-event handler there would never register.
+        function __restore_normal_screen --on-event fish_postexec
+            printf '\e[?1049l'
+        end
         set -p fish_user_paths "/home/${user}/.apps" "/home/${user}/.npm" "/home/${user}/.npm/bin" "/home/${user}/.npm/lib" "/home/${user}/.local/bin" "/home/${user}/.cargo/bin"
         ${pkgs.worktrunk}/bin/wt config shell init fish | source
         start_zellij

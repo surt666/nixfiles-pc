@@ -27,6 +27,16 @@ in {
             --replace-fail "UseIn=gnome" "UseIn=gnome;Hyprland"
         '';
       });
+
+      # Upstream nixpkgs has a stale pnpmDeps hash for 6.0.2. Drop once fixed.
+      typescript-language-server = super.typescript-language-server.overrideAttrs (finalAttrs: old: {
+        pnpmDeps = super.fetchPnpmDeps {
+          inherit (finalAttrs) pname version src;
+          pnpm = super.pnpm_12;
+          fetcherVersion = 4;
+          hash = "sha256-xR/EF60lVBsITKgH7wCM2wHM46PFQevD51KfCENSUH4=";
+        };
+      });
     })
   ];
 
@@ -315,6 +325,9 @@ in {
     extraGroups = [ "plugdev" "networkmanager" "wheel" "audio" "video" "input" "lp" "docker"];
     shell = pkgs.fish;
     ignoreShellProgramCheck = true;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0wB57IuMIfGAGoyTNbem2VVn5UZEB1a4AYQ9uetPF/ sla@nixos"
+    ];
   };
 
   services.udev = {
@@ -433,7 +446,7 @@ in {
       pnpm
       obs-studio
       kdePackages.kdenlive
-      gemini-cli
+      antigravity-cli
       bun
       coreutils
       busybox
@@ -468,6 +481,7 @@ in {
       beam28Packages.elixir-ls
       lxappearance
       php
+      herdr
       aws-sam-cli
       clojure
       postgresql
@@ -717,7 +731,17 @@ in {
   # USB Automounting
   services.gvfs.enable = true;
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+    };
+  };
+
+  # Tailscale: reach this machine (herdr --remote) from work without port-forwarding
+  services.tailscale.enable = true;
 
   # Enable Redis server
   systemd.services.valkey = {
@@ -749,6 +773,10 @@ in {
     bind 127.0.0.1
     port 6379
     dir /var/lib/valkey
+
+    # The unit above is Type=notify, so valkey must send READY=1 over
+    # NOTIFY_SOCKET or systemd times out the start job and restarts forever.
+    supervised systemd
     
     # Add any other config you need:
     # requirepass yourpassword
@@ -765,7 +793,10 @@ in {
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];
     serviceConfig = {
-      ExecStart = "${pkgs.jdk17}/bin/java -jar ${pkgs.questdb}/share/java/questdb.jar -d /var/lib/questdb";
+      # questdb.jar is built for class file version 69 (Java 25); jdk17/jdk21
+      # fail with UnsupportedClassVersionError. Keep in sync with the JDK the
+      # nixpkgs questdb wrapper uses.
+      ExecStart = "${pkgs.jdk25}/bin/java -jar ${pkgs.questdb}/share/java/questdb.jar -d /var/lib/questdb";
       Restart = "on-failure";
       User = "questdb";
       Group = "questdb";

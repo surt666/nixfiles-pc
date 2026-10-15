@@ -2,7 +2,10 @@
 {
   programs.waybar = {
     enable = true;
-    # systemd.enable = true;
+    # Run waybar as a graphical-session user unit. Its Restart=on-failure
+    # brings it back when the pulseaudio module aborts on a pipewire restart
+    # (e.g. during nixos-rebuild switch).
+    systemd.enable = true;
     package =pkgs.waybar;
     style = ''
       ${builtins.readFile "${pkgs.waybar}/etc/xdg/waybar/style.css"}

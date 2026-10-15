@@ -17,7 +17,8 @@
     # See https://wiki.hyprland.org/Configuring/Keywords/ for more
 
     # Execute your favorite apps at launch
-    exec-once = waybar & google-chrome-stable --enable-features=WebUIDarkMode,UseOzonePlatform --ozone-platform=wayland --force-dark-mode 
+    # waybar is started by its systemd user unit (see waybar.nix)
+    exec-once = google-chrome-stable --enable-features=WebUIDarkMode,UseOzonePlatform --ozone-platform=wayland --force-dark-mode 
     # exec-once = hypridle
     # exec-once = winboat
     # exec-once = waybar & google-chrome-stable #& firefox #& hyprpaper
