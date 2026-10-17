@@ -249,6 +249,11 @@ in
       # Way of working
 
       - Always use the `mmmss` skill (Many More Much Smaller Steps) when changing code, content, config or infrastructure: small ready-to-ready steps, one local commit per step (current branch, no push).
+
+      # Code comments
+
+      - Be succinct: the concise style goes for code comments too. Long comments break the reading flow.
+      - One or two lines saying why, not what. History, measurements and rationale go in the commit message or knowledge pages.
     '';
     ".go-env.nu".text = ''
       $env.GOPATH = $"($env.HOME)/go"
