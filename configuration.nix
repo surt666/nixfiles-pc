@@ -543,6 +543,7 @@ in {
       usbutils
       dotnet-sdk
       python313
+      marimo
       # python311Packages.pip
       # python311Packages.python-lsp-server
       # python311Packages.python-lsp-ruff
