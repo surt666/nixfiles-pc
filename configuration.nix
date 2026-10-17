@@ -76,10 +76,11 @@ in {
   # capability it lacks, so the portal rejected requests with
   # "AccessDenied: Unable to open /proc/<pid>/root" and Chrome's file/upload picker
   # never appeared. Proven: dropping the caller's ambient caps makes OpenFile work.
-  # capabilities = "" falls through to a plain wrapper, so /run/wrappers/bin/Hyprland
-  # still exists for SDDM but carries no caps (Hyprland just loses RT scheduling).
-  # mkForce: the hyprland module sets this as a plain (non-mkDefault) definition.
-  security.wrappers.Hyprland.capabilities = lib.mkForce "";
+  # With no caps the wrapper is pointless, so disable it outright (Hyprland just
+  # loses RT scheduling). The session runs start-hyprland, which finds Hyprland on
+  # PATH. It can't stay enabled anyway: nixpkgs' ensure-wrapper-integrity check
+  # rejects non-ELF sources, and the flake's bin/Hyprland is a makeWrapper script.
+  security.wrappers.Hyprland.enable = false;
   # boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "resume=UUID=1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba" "resume_offset=21792768" "pm_freeze_timeout=30000"];
   # boot.resumeDevice = "/dev/disk/by-uuid/1a8f7a0b-3d89-42b6-98bb-550e8fc1d6ba";
   #Boot entries limit
