@@ -245,6 +245,10 @@ in
       - Back claims with concrete details: versions, paths, commands, exact error text.
       - Leave out background explanations, restated context and options I won't act on.
       - When I need to do something, put the command in a code block.
+
+      # Way of working
+
+      - Always use the `mmmss` skill (Many More Much Smaller Steps) when changing code, content, config or infrastructure: small ready-to-ready steps, one local commit per step (current branch, no push).
     '';
     ".go-env.nu".text = ''
       $env.GOPATH = $"($env.HOME)/go"

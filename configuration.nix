@@ -575,7 +575,7 @@ in {
       pipewire
       lshw
       hyprcursor
-      zig
+      zig_0_17
       zls
       mesa-demos
       brightnessctl
