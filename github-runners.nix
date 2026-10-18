@@ -3,6 +3,13 @@
 # scripts/local-runner/setup.sh once. A runner with no registration is skipped, not crash-looped.
 { pkgs, lib, ... }:
 let
+  # nixpkgs ships node24 only, but the runner hardwires node20 for hashFiles().
+  github-runner = pkgs.github-runner.overrideAttrs (old: {
+    doCheck = false;
+    postInstall = (old.postInstall or "") + ''
+      ln -s node24 $out/lib/externals/node20
+    '';
+  });
   runner = n: {
     Unit = {
       Description = "GitHub Actions runner gramr r${toString n}";
@@ -12,11 +19,9 @@ let
     Service = {
       Environment = [
         "RUNNER_ROOT=%h/.local/share/gramr-runner/r${toString n}"
-        # nixpkgs ships node24 only; hashFiles() picks its node from this process variable.
-        "ACTIONS_RUNNER_FORCED_INTERNAL_NODE_VERSION=node24"
       ];
       WorkingDirectory = "%h/.local/share/gramr-runner/r${toString n}";
-      ExecStart = "${pkgs.github-runner}/bin/run.sh";
+      ExecStart = "${github-runner}/bin/run.sh";
       Restart = "always";
       RestartSec = 10;
       # The runner forwards SIGINT to a running job; let it finish cleanly.
