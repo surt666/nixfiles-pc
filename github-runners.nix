@@ -10,7 +10,11 @@ let
       ConditionPathExists = "%h/.local/share/gramr-runner/r${toString n}/.runner";
     };
     Service = {
-      Environment = [ "RUNNER_ROOT=%h/.local/share/gramr-runner/r${toString n}" ];
+      Environment = [
+        "RUNNER_ROOT=%h/.local/share/gramr-runner/r${toString n}"
+        # nixpkgs ships node24 only; hashFiles() picks its node from this process variable.
+        "ACTIONS_RUNNER_FORCED_INTERNAL_NODE_VERSION=node24"
+      ];
       WorkingDirectory = "%h/.local/share/gramr-runner/r${toString n}";
       ExecStart = "${pkgs.github-runner}/bin/run.sh";
       Restart = "always";
