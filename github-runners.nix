@@ -3,13 +3,7 @@
 # scripts/local-runner/setup.sh once. A runner with no registration is skipped, not crash-looped.
 { pkgs, lib, ... }:
 let
-  # nixpkgs ships node24 only, but the runner hardwires node20 for hashFiles().
-  github-runner = pkgs.github-runner.overrideAttrs (old: {
-    doCheck = false;
-    postInstall = (old.postInstall or "") + ''
-      ln -s node24 $out/lib/externals/node20
-    '';
-  });
+  github-runner = import ./github-runner/package.nix { inherit pkgs; };
   runner = n: {
     Unit = {
       Description = "GitHub Actions runner gramr r${toString n}";
