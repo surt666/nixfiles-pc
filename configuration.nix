@@ -326,6 +326,8 @@ in {
     extraGroups = [ "plugdev" "networkmanager" "wheel" "audio" "video" "input" "lp" "docker"];
     shell = pkgs.fish;
     ignoreShellProgramCheck = true;
+    # User services (the GitHub runners) start at boot, without a login.
+    linger = true;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0wB57IuMIfGAGoyTNbem2VVn5UZEB1a4AYQ9uetPF/ sla@nixos"
     ];

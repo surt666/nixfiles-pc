@@ -126,6 +126,7 @@ in
   imports = [
   	./hyprland.nix
   	./waybar.nix
+  	./github-runners.nix
 	];
 
  # Home Manager needs a bit of information about you and the
