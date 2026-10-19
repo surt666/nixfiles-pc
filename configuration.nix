@@ -487,6 +487,7 @@ in {
       herdr
       aws-sam-cli
       clojure
+      clojure-lsp
       postgresql
       tsocks
       fwupd
