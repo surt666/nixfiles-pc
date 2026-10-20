@@ -471,7 +471,7 @@ in {
       qt5.qtwayland
       terraform-ls
       adwaita-qt
-      maven
+      (maven.override { jdk_headless = jdk25_headless; })
       google-chrome
       # (google-chrome.override {
       #   commandLineArgs = [
