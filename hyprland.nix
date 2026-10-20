@@ -189,7 +189,7 @@
     bind = $mainMod, O, exec, obsidian
     bind = $mainMod, L, exec, hyprlock
     bind = $mainMod SHIFT, H, exec, systemctl suspend
-    bind = $mainMod, J, togglesplit, # dwindle
+    bind = $mainMod, J, layoutmsg, togglesplit # dwindle
     bind = $mainMod, C, movetoworkspace, special
     bind = $mainMod SHIFT, C, togglespecialworkspace,
     bind = $mainMod SHIFT, S, exec, systemctl suspend
