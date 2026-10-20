@@ -159,6 +159,25 @@ in
     libcanberra-gtk3
     cljfmt # helix master formats clojure with it
     rlwrap # clj picks it up for line editing
+    # REPL in a zellij pane beside helix; clj-send types stdin into it
+    (pkgs.writeShellScriptBin "clj-repl" ''
+      set -eu
+      [ -n "''${ZELLIJ_SESSION_NAME:-}" ] || { echo "clj-repl: not inside zellij" >&2; exit 1; }
+      [ $# -gt 0 ] || set -- clj
+      zellij action new-pane --direction right --name repl --no-focus --cwd "$PWD" -- "$@" \
+        > "''${XDG_RUNTIME_DIR:-/tmp}/clj-repl-$ZELLIJ_SESSION_NAME"
+    '')
+    (pkgs.writeShellScriptBin "clj-send" ''
+      set -eu
+      state="''${XDG_RUNTIME_DIR:-/tmp}/clj-repl-''${ZELLIJ_SESSION_NAME:-}"
+      pane=$(cat "$state" 2>/dev/null) || { echo "clj-send: no REPL pane, run clj-repl" >&2; exit 1; }
+      code=$(cat)
+      zellij action write-chars --pane-id "$pane" -- "$code"
+      zellij action write --pane-id "$pane" 13
+    '')
+    (pkgs.writeShellScriptBin "clj-load" ''
+      printf '(load-file "%s")' "$(realpath "$1")" | clj-send
+    '')
     (pkgs.writeShellScriptBin "set_monitor.sh" ''
       # export XDG_RUNTIME_DIR=/run/user/$(id -u)
       wlr-randr --output DP-2 --custom-mode 5120x2160@60Hz --pos -2560,0
