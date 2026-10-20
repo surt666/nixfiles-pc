@@ -11,6 +11,8 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nix-alien.url = "github:thiagokokada/nix-alien";
     nix-alien.inputs.nixpkgs.follows = "nixpkgs";
+    # master for rainbow brackets (not in 25.07.1)
+    helix.url = "github:helix-editor/helix";
   };
 
   outputs = { self, nixpkgs, hyprland, home-manager, nix-alien, ... } @ inputs:
