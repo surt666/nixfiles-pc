@@ -659,6 +659,7 @@ in
       roots = ["project.clj", "deps.edn", "build.boot", "shadow-cljs.edn", "bb.edn"]
       comment-token = ";"
       language-servers = ["clojure-lsp"]
+      rainbow-brackets = true
       indent = { tab-width = 2, unit = "  " }
       auto-format = true
 
@@ -671,6 +672,7 @@ in
       roots = ["project.clj", "deps.edn", "build.boot", "shadow-cljs.edn", "bb.edn"]
       comment-token = ";"
       language-servers = ["clojure-lsp"]
+      rainbow-brackets = true
       indent = { tab-width = 2, unit = "  " }
       auto-format = true
 
@@ -682,6 +684,7 @@ in
       file-types = ["edn"]
       comment-token = ";"
       language-servers = ["clojure-lsp"]
+      rainbow-brackets = true
       indent = { tab-width = 2, unit = "  " }
       auto-format = true
       grammar = "clojure"
