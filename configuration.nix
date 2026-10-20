@@ -590,7 +590,7 @@ in {
       evtest
       gcc13
       stdenv.cc.cc.lib
-      jdk
+      jdk25
       # kdePackages.xwaylandvideobridge
       marksman
       zoom-us
