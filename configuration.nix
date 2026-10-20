@@ -486,7 +486,7 @@ in {
       php
       herdr
       aws-sam-cli
-      clojure
+      (clojure.override { jdk = jdk25; })
       clojure-lsp
       postgresql
       tsocks
