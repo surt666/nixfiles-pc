@@ -306,7 +306,7 @@ in {
   users.users.sla = {
     isNormalUser = true;
     description = "Steen Larsen";
-    extraGroups = [ "plugdev" "networkmanager" "wheel" "audio" "video" "input" "lp" "docker"];
+    extraGroups = [ "plugdev" "networkmanager" "wheel" "audio" "video" "input" "lp" "dialout" "docker"];
     shell = pkgs.fish;
     ignoreShellProgramCheck = true;
     # User services (the GitHub runners) start at boot, without a login.
