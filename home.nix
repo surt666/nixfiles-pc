@@ -158,6 +158,7 @@ in
     libnotify
     libcanberra-gtk3
     cljfmt # helix master formats clojure with it
+    rlwrap # clj picks it up for line editing
     (pkgs.writeShellScriptBin "set_monitor.sh" ''
       # export XDG_RUNTIME_DIR=/run/user/$(id -u)
       wlr-randr --output DP-2 --custom-mode 5120x2160@60Hz --pos -2560,0
