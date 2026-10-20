@@ -1361,6 +1361,14 @@ in
           C-k = ["goto_prev_paragraph"];
           C-f = [":new" ":insert-output lf-pick" "split_selection_on_newline" "goto_file" "goto_last_modification" "goto_last_modified_file" ":buffer-close!" ":theme nord" ":theme default"];
           C-h = [":new" ":insert-output gitui" ":buffer-close!" ":redraw"];
+          # REPL in a zellij pane, see clj-repl / clj-send
+          space.x = {
+            r = ":sh clj-repl";
+            s = ":pipe-to clj-send";
+            e = "@;mam:pipe-to clj-send<ret>;";
+            l = "@x:pipe-to clj-send<ret>;";
+            f = [":write" ":sh clj-load %{buffer_name}"];
+          };
         };
         keys.select = {
           C-j = ["goto_next_paragraph"];
