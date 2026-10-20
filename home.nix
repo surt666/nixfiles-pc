@@ -488,6 +488,12 @@ in
       # Title bar
       # macos_titlebar_color #16161e
     '';
+    # clj -M:pretty: REPL with formatted, colored exceptions
+    ".clojure/deps.edn".text = ''
+      {:aliases
+       {:pretty {:extra-deps {org.clj-commons/pretty {:mvn/version "3.10.0"}}
+                 :main-opts ["--main" "clj-commons.pretty.repl"]}}}
+    '';
     ".config/light/targets/sysfs/backlight/auto/minimum".text = ''
     10
     '';
