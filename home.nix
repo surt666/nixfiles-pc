@@ -488,11 +488,13 @@ in
       # Title bar
       # macos_titlebar_color #16161e
     '';
-    # clj -M:pretty: REPL with formatted, colored exceptions
+    # clj -M:pretty: REPL with formatted, colored exceptions and pprinted results
     ".clojure/deps.edn".text = ''
       {:aliases
        {:pretty {:extra-deps {org.clj-commons/pretty {:mvn/version "3.10.0"}}
-                 :main-opts ["--main" "clj-commons.pretty.repl"]}}}
+                 :main-opts ["--main" "clj-commons.pretty.repl"
+                             ;; one line: the CLI splits main-opts on newlines
+                             "-e" "(require 'clojure.pprint) (clojure.main/repl :init #(apply require clojure.main/repl-requires) :print clojure.pprint/pprint)"]}}}
     '';
     ".config/light/targets/sysfs/backlight/auto/minimum".text = ''
     10
