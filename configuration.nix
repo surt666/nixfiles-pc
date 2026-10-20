@@ -341,7 +341,6 @@ in {
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE="0666", TAG+="uaccess"
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
 
-      ACTION=="add", SUBSYSTEM=="usb", DEVPATH=="*/usb3/3-12", ATTR{authorized}="0"
     '';
   };
     
