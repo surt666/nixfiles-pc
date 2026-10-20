@@ -567,7 +567,8 @@
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "nix-alien": "nix-alien",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_3",
+        "tryx": "tryx"
       }
     },
     "rust-overlay": {
@@ -603,6 +604,27 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default-linux",
+        "type": "github"
+      }
+    },
+    "tryx": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791442045,
+        "narHash": "sha256-zrtRNWx2LitHmzE8bMvbPURbGP1Gz6fEAjpBQ3oiY/U=",
+        "owner": "DXVSI",
+        "repo": "Tryx-Linux-GUI",
+        "rev": "cb6646273d76bbe777927a4662d810bea649014c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DXVSI",
+        "ref": "development",
+        "repo": "Tryx-Linux-GUI",
         "type": "github"
       }
     },

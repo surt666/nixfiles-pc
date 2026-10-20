@@ -316,11 +316,16 @@ in {
     ];
   };
 
+  # TRYX Panorama display: runtime user service and its udev rules
+  systemd.packages = [ pkgs.tryx-panorama-manager ];
+  systemd.user.services.tryx-panorama.wantedBy = [ "graphical-session.target" ];
+
   services.udev = {
     enable = true;
     # TRYX Panorama SE (legacy cm01_se) resets its USB link after libmtp's
     # probe; must sort before 69-libmtp.rules, so not in extraRules (99-local)
     packages = [
+      pkgs.tryx-panorama-manager
       (pkgs.writeTextDir "lib/udev/rules.d/60-tryx-nomtp.rules" ''
         ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="2d04", ENV{MTP_NO_PROBE}="1"
       '')
@@ -424,6 +429,7 @@ in {
       server_type = 5
     '';
     systemPackages = with pkgs; [
+      tryx-panorama-manager
       # winboat  # Temporarily disabled: Go 1.26.1 mingw cross-compilation broken
       freerdp
       pkg-config

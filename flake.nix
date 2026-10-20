@@ -13,6 +13,9 @@
     nix-alien.inputs.nixpkgs.follows = "nixpkgs";
     # master for rainbow brackets (not in 25.07.1)
     helix.url = "github:helix-editor/helix";
+    # TRYX Panorama cooler display; flake only on development until after 2.5.3
+    tryx.url = "github:DXVSI/Tryx-Linux-GUI/development";
+    tryx.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { self, nixpkgs, hyprland, home-manager, nix-alien, ... } @ inputs:
@@ -32,6 +35,7 @@
             {
               nixpkgs.config.allowUnfree = true;
               nixpkgs.overlays = [
+                inputs.tryx.overlays.default
                 # rust-overlay.overlays.default
                 # Fix aws-sam-cli: skip tests and runtime dep checks
                 (final: prev: {
