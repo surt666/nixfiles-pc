@@ -163,7 +163,7 @@ in
     (pkgs.writeShellScriptBin "clj-repl" ''
       set -eu
       [ -n "''${ZELLIJ_SESSION_NAME:-}" ] || { echo "clj-repl: not inside zellij" >&2; exit 1; }
-      [ $# -gt 0 ] || set -- clj
+      [ $# -gt 0 ] || set -- clj -M:pretty
       zellij action new-pane --direction right --name repl --no-focus --cwd "$PWD" -- "$@" \
         > "''${XDG_RUNTIME_DIR:-/tmp}/clj-repl-$ZELLIJ_SESSION_NAME"
     '')
