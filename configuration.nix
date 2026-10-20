@@ -335,6 +335,13 @@ in {
 
   services.udev = {
     enable = true;
+    # TRYX Panorama SE (legacy cm01_se) resets its USB link after libmtp's
+    # probe; must sort before 69-libmtp.rules, so not in extraRules (99-local)
+    packages = [
+      (pkgs.writeTextDir "lib/udev/rules.d/60-tryx-nomtp.rules" ''
+        ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", ATTR{idProduct}=="2d04", ENV{MTP_NO_PROBE}="1"
+      '')
+    ];
     extraRules = ''
       # Voyager - WebUSB access (this is the critical part)
       SUBSYSTEM=="usb", ATTRS{idVendor}=="3297", ATTRS{idProduct}=="1977", MODE="0666", TAG+="uaccess"
