@@ -1,245 +1,150 @@
 {config, pkgs, lib, user, kernelPackages, nvidiaPackage, ...}:
 {
   wayland.windowManager.hyprland.enable = true;
-  # extraConfig below is hyprlang; keep that format explicitly (the home-manager
-  # default flips to "lua" at stateVersion 26.05, which would break extraConfig).
-  wayland.windowManager.hyprland.configType = "hyprlang";
-  # wlr-randr to find monitors
-  wayland.windowManager.hyprland.extraConfig = 
+  wayland.windowManager.hyprland.configType = "lua";
+  wayland.windowManager.hyprland.extraConfig =
   ''
-    # Builtin monitor
-    # monitor=,preferred,auto,1 # Fallback
-    # monitor=HDMI-A-2,1920x1980@60,0x0,1
-    # monitor=HDMI-A-2,5120x2160@30,0x0,1
-    monitor=DP-3,5120x2160@59.98,0x0,1
-    #monitor=,highres,auto,1
+    -- wlr-randr to find monitors
+    -- hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 }) -- Fallback
+    -- hl.monitor({ output = "HDMI-A-2", mode = "5120x2160@30", position = "0x0", scale = 1 })
+    hl.monitor({ output = "DP-3", mode = "5120x2160@59.98", position = "0x0", scale = 1 })
 
-    # See https://wiki.hyprland.org/Configuring/Keywords/ for more
+    local chrome = "google-chrome-stable --enable-features=WebUIDarkMode,UseOzonePlatform --ozone-platform=wayland --force-dark-mode"
 
-    # Execute your favorite apps at launch
-    # waybar is started by its systemd user unit (see waybar.nix)
-    exec-once = google-chrome-stable --enable-features=WebUIDarkMode,UseOzonePlatform --ozone-platform=wayland --force-dark-mode 
-    # exec-once = hypridle
-    # exec-once = winboat
-    # exec-once = waybar & google-chrome-stable #& firefox #& hyprpaper
-    # exec-once = ~/.config/hypr/scripts/suspend.sh
-    # exec-once = wl-clipboard-history -t
-    # Notification 
-    # exec-once = poweralertd
-    # exec-once = syncthing
-    # exec-once = sleep 4; qsyncthingtray
-    # Wallpaper
-    exec-once = ~/.nixfiles/scripts/changewallpaper.sh
-    # exec-once= bash ~/.config/waybar/scripts/changewallpaper.sh
-    # Bluetooth
-    # exec-once=blueman-applet # Make sure you have installed blueman + blueman-utils
+    -- waybar is started by its systemd user unit (see waybar.nix)
+    hl.on("hyprland.start", function()
+        hl.exec_cmd(chrome)
+        hl.exec_cmd("~/.nixfiles/scripts/changewallpaper.sh")
+        hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+        hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DBUS_SESSION_BUS_ADDRESS")
+        hl.exec_cmd("~/.config/hypr/scripts/move-sharing-popup.sh")
+        hl.exec_cmd("~/.nixfiles/scripts/screensharing.sh")
+    end)
 
-    exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP 
-    exec-once = systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DBUS_SESSION_BUS_ADDRESS
-    exec-once = ~/.config/hypr/scripts/move-sharing-popup.sh
+    hl.env("LIBVA_DRIVER_NAME", "nvidia")
+    hl.env("XDG_SESSION_TYPE", "wayland")
+    hl.env("GBM_BACKEND", "nvidia-drm")
+    hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+    hl.env("WLR_DRM_NO_ATOMIC", "1")
+    hl.env("CUDA_CACHE_DISABLE", "1")
 
-    # Screen Sharing
-    exec-once = ~/.nixfiles/scripts/screensharing.sh
+    hl.config({
+        cursor = {
+            no_hardware_cursors = true,
+        },
 
-    env_cursor_theme=Hyprcursor
-    env_cursor_size=48
+        misc = {
+            vrr = 0,
+            disable_autoreload = true,
+            disable_hyprland_logo = true,
+            mouse_move_enables_dpms = true,
+            key_press_enables_dpms = true,
+        },
 
-    # Source a file (multi-file configs)
-    # source = ~/.config/hypr/myColors.conf
+        debug = {
+            disable_logs = false,
+            enable_stdout_logs = true,
+        },
 
-    # Some default env vars.
-    # env = XCURSOR_SIZE,28
-    # env = XCURSOR_THEME,Bibata-cursors
+        input = {
+            kb_layout = "dk,us",
+            kb_variant = "nodeadkeys",
+            kb_model = "",
+            kb_options = "grp:alt_space_toggle",
+            kb_rules = "",
 
-    env = LIBVA_DRIVER_NAME,nvidia
-    env = XDG_SESSION_TYPE,wayland
-    env = GBM_BACKEND,nvidia-drm
-    env = __GLX_VENDOR_LIBRARY_NAME,nvidia
-    env = WLR_DRM_NO_ATOMIC,1
-    env = CUDA_CACHE_DISABLE,1
+            follow_mouse = 1,
 
-    cursor {
-        no_hardware_cursors = true
-    }
+            sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
+        },
 
-    animations {
-        enabled = false
-    }
+        general = {
+            gaps_in = 3,
+            gaps_out = 4,
+            border_size = 2,
+            col = {
+                active_border = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 },
+                inactive_border = "rgba(595959aa)",
+            },
 
-    misc {
-        vrr = 0
-        disable_autoreload = true
-        disable_hyprland_logo = true
-        mouse_move_enables_dpms = true
-        key_press_enables_dpms = true
-    }
+            layout = "dwindle",
+            allow_tearing = false,
+        },
 
-    # workspace = 1, monitor:HDMI-A-2, default:true
-    # workspace = 2, monitor:HDMI-A-2, default:true
-    # workspace = 3, monitor:HDMI-A-2, default:true
-    # workspace = 4, monitor:HDMI-A-2, default:true
-    # workspace = 5, monitor:HDMI-A-2, default:true
-    # workspace = 9, monitor:HDMI-A-2, default:true
-    
-    debug {
-        disable_logs = false
-        enable_stdout_logs = true
-    }
-    
-    # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
-    input {
-        kb_layout = dk,us
-        kb_variant = nodeadkeys
-        kb_model =
-        kb_options = grp:alt_space_toggle
-        kb_rules =
+        decoration = {
+            rounding = 10,
 
-        follow_mouse = 1
+            blur = {
+                enabled = true,
+                size = 3,
+                passes = 1,
+            },
+        },
 
-        sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
-    }
+        animations = {
+            enabled = true,
+        },
 
-    general {
-        # See https://wiki.hyprland.org/Configuring/Variables/ for more
+        dwindle = {
+            preserve_split = true,
+        },
 
-        gaps_in = 3 
-        gaps_out = 4
-        border_size = 2
-        col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
-        col.inactive_border = rgba(595959aa)
+        master = {
+            new_status = "master",
+        },
+    })
 
-        layout = dwindle
-        allow_tearing = false
-    }
+    hl.curve("myBezier", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.05 } } })
 
-    decoration {
-        # See https://wiki.hyprland.org/Configuring/Variables/ for more
+    hl.animation({ leaf = "windows", enabled = true, speed = 7, bezier = "myBezier" })
+    hl.animation({ leaf = "windowsOut", enabled = true, speed = 7, bezier = "default", style = "popin 80%" })
+    hl.animation({ leaf = "border", enabled = true, speed = 10, bezier = "default" })
+    hl.animation({ leaf = "borderangle", enabled = true, speed = 8, bezier = "default" })
+    hl.animation({ leaf = "fade", enabled = true, speed = 7, bezier = "default" })
+    hl.animation({ leaf = "workspaces", enabled = true, speed = 6, bezier = "default" })
 
-        rounding = 10
+    local mainMod = "SUPER"
 
-        blur {
-            enabled = true
-            size = 3
-            passes = 1
-        }
+    hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("ghostty"))
+    hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.close())
+    hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("GDK_BACKEND=x11 slack"))
+    hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("GDK_BACKEND=x11 teams-for-linux"))
+    hl.bind(mainMod .. " + M", hl.dsp.exit())
+    hl.bind(mainMod .. " + F", hl.dsp.exec_cmd("firefox"))
+    hl.bind(mainMod .. " + G", hl.dsp.exec_cmd(chrome))
+    hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("kitty ranger"))
+    hl.bind(mainMod .. " + P", hl.dsp.exec_cmd('grim -g "$(slurp)" - | swappy -f -'))
+    hl.bind(mainMod .. " + SHIFT + V", hl.dsp.window.float({ action = "toggle" }))
+    hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("wofi --show drun"))
+    hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("obsidian"))
+    hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
+    hl.bind(mainMod .. " + SHIFT + H", hl.dsp.exec_cmd("systemctl suspend"))
+    hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle
+    hl.bind(mainMod .. " + C", hl.dsp.window.move({ workspace = "special" }))
+    hl.bind(mainMod .. " + SHIFT + C", hl.dsp.workspace.toggle_special())
+    hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("systemctl suspend"))
 
-        # drop_shadow {
-        #     enabled = yes
-        #     range = 4
-        #     render_power = 3
-        #     color = rgba(1a1a1aee)
-        # }
-    }
+    -- Move focus with mainMod + arrow keys
+    hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
+    hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
+    hl.bind(mainMod .. " + up", hl.dsp.focus({ direction = "up" }))
+    hl.bind(mainMod .. " + down", hl.dsp.focus({ direction = "down" }))
 
-    animations {
-        enabled = yes
+    -- Switch workspaces with mainMod + [0-9]; move the window there with SHIFT
+    for i = 1, 10 do
+        local key = i % 10 -- 10 maps to key 0
+        hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
+        hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+    end
 
-        # Some default animations, see https://wiki.hyprland.org/Configuring/Animations/ for more
+    -- Scroll through existing workspaces with mainMod + scroll
+    hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+    hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
-        bezier = myBezier, 0.05, 0.9, 0.1, 1.05
+    -- Sound: wpctl lists sinks; `wpctl set-default 59` picks sink 59
 
-        animation = windows, 1, 7, myBezier
-        animation = windowsOut, 1, 7, default, popin 80%
-        animation = border, 1, 10, default
-        animation = borderangle, 1, 8, default
-        animation = fade, 1, 7, default
-        animation = workspaces, 1, 6, default
-    }
-
-    dwindle {
-        # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
-        preserve_split = yes # you probably want this
-    }
-
-    master {
-        # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
-        new_status = master
-    }
-
-
-    # Example per-device config
-    # See https://wiki.hyprland.org/Configuring/Keywords/#executing for more
-    # device ={
-    #     name = epic-mouse-v1 # logitech-advanced-corded-mouse-m500s
-    #     sensitivity = -0.5
-    # }
-
-    # Example windowrule v1
-    # windowrule = float, ^(kitty)$
-    # Example windowrule v2
-    # windowrulev2 = float,class:^(kitty)$,title:^(kitty)$
-    # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
-
-
-    # See https://wiki.hyprland.org/Configuring/Keywords/ for more
-    $mainMod = SUPER
-
-    # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
-    bind = $mainMod, Q, exec, ghostty
-    bind = $mainMod SHIFT, K, killactive,
-    bind = $mainMod, S, exec, GDK_BACKEND=x11 slack 
-    bind = $mainMod, T, exec, GDK_BACKEND=x11 teams-for-linux
-    bind = $mainMod, M, exit, 
-    bind = $mainMod, F, exec, firefox 
-    bind = $mainMod, G, exec, google-chrome-stable --enable-features=WebUIDarkMode,UseOzonePlatform --ozone-platform=wayland --force-dark-mode
-    bind = $mainMod, R, exec, kitty ranger
-    bind = $mainMod, P, exec, grim -g "$(slurp)" - | swappy -f -
-    bind = $mainMod SHIFT, V, togglefloating, 
-    bind = $mainMod, W, exec, wofi --show drun
-    bind = $mainMod, O, exec, obsidian
-    bind = $mainMod, L, exec, hyprlock
-    bind = $mainMod SHIFT, H, exec, systemctl suspend
-    bind = $mainMod, J, layoutmsg, togglesplit # dwindle
-    bind = $mainMod, C, movetoworkspace, special
-    bind = $mainMod SHIFT, C, togglespecialworkspace,
-    bind = $mainMod SHIFT, S, exec, systemctl suspend
-
-
-    # Move focus with mainMod + arrow keys
-    bind = $mainMod, left, movefocus, l
-    bind = $mainMod, right, movefocus, r
-    bind = $mainMod, up, movefocus, u
-    bind = $mainMod, down, movefocus, d
-
-    # Switch workspaces with mainMod + [0-9]
-    bind = $mainMod, 1, workspace, 1
-    bind = $mainMod, 2, workspace, 2
-    bind = $mainMod, 3, workspace, 3
-    bind = $mainMod, 4, workspace, 4
-    bind = $mainMod, 5, workspace, 5
-    bind = $mainMod, 6, workspace, 6
-    bind = $mainMod, 7, workspace, 7
-    bind = $mainMod, 8, workspace, 8
-    bind = $mainMod, 9, workspace, 9
-    bind = $mainMod, 0, workspace, 10
-
-    # Move active window to a workspace with mainMod + SHIFT + [0-9]
-    bind = $mainMod SHIFT, 1, movetoworkspace, 1
-    bind = $mainMod SHIFT, 2, movetoworkspace, 2
-    bind = $mainMod SHIFT, 3, movetoworkspace, 3
-    bind = $mainMod SHIFT, 4, movetoworkspace, 4
-    bind = $mainMod SHIFT, 5, movetoworkspace, 5
-    bind = $mainMod SHIFT, 6, movetoworkspace, 6
-    bind = $mainMod SHIFT, 7, movetoworkspace, 7
-    bind = $mainMod SHIFT, 8, movetoworkspace, 8
-    bind = $mainMod SHIFT, 9, movetoworkspace, 9
-    bind = $mainMod SHIFT, 0, movetoworkspace, 10
-
-    # Scroll through existing workspaces with mainMod + scroll
-    bind = $mainMod, mouse_down, workspace, e+1
-    bind = $mainMod, mouse_up, workspace, e-1
-
-
-    # Sound
-    # wpctl set-default 59 to set default sink to 59
-    # use wpctl to see sinks
-    # bind = , XF86AudioMute, exec, pamixer -t
-    # bind = , XF86AudioRaiseVolume, exec, pamixer -i 5
-    # bind = , XF86AudioLowerVolume, exec, pamixer -d 5
-    # bind = , XF86AudioMicMute, exec, pamixer --default-source -m
-
-    # Move/resize windows with mainMod + LMB/RMB and dragging
-    bindm = $mainMod, mouse:272, movewindow
-    bindm = $mainMod, mouse:273, resizewindow
+    -- Move/resize windows with mainMod + LMB/RMB and dragging
+    hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+    hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
   '';
 }
