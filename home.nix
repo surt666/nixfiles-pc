@@ -1311,6 +1311,13 @@ in
           indent-guides = {
             render = true;
           };
+          # no ' pair: it's quote in lisps
+          auto-pairs = {
+            "(" = ")";
+            "[" = "]";
+            "{" = "}";
+            "\"" = "\"";
+          };
           file-picker = {
             hidden = false;
           };
