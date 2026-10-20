@@ -488,6 +488,7 @@ in {
       aws-sam-cli
       (clojure.override { jdk = jdk25; })
       clojure-lsp
+      clj-kondo
       postgresql
       tsocks
       fwupd
