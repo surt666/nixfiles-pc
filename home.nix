@@ -491,10 +491,12 @@ in
     # clj -M:pretty: REPL with formatted, colored exceptions and pprinted results
     ".clojure/deps.edn".text = ''
       {:aliases
-       {:pretty {:extra-deps {org.clj-commons/pretty {:mvn/version "3.10.0"}}
+       {:pretty {:extra-deps {org.clj-commons/pretty {:mvn/version "3.10.0"}
+                              nrepl/nrepl {:mvn/version "1.8.0"}}
                  :main-opts ["--main" "clj-commons.pretty.repl"
                              ;; one line: the CLI splits main-opts on newlines
-                             "-e" "(require 'clojure.pprint) (clojure.main/repl :init #(apply require clojure.main/repl-requires) :print clojure.pprint/pprint)"]}}}
+                             ;; nREPL in the same JVM so clojure-mcp shares this REPL
+                             "-e" "(require 'clojure.pprint 'nrepl.server) (let [p (:port (nrepl.server/start-server))] (spit \".nrepl-port\" p) (.deleteOnExit (java.io.File. \".nrepl-port\"))) (clojure.main/repl :init #(apply require clojure.main/repl-requires) :print clojure.pprint/pprint)"]}}}
     '';
     ".config/light/targets/sysfs/backlight/auto/minimum".text = ''
     10
