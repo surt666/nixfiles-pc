@@ -10,6 +10,15 @@
 let  # Define cross-compilation targets
   aarch64-linux-musl = pkgs.pkgsCross.aarch64-multiplatform-musl;
   aarch64-linux = pkgs.pkgsCross.aarch64-multiplatform;
+  # stablyai/orca agent IDE; nixpkgs `orca` is the GNOME screen reader.
+  orca-ide = pkgs.appimageTools.wrapType2 rec {
+    pname = "orca-ide";
+    version = "1.4.244";
+    src = pkgs.fetchurl {
+      url = "https://github.com/stablyai/orca/releases/download/v${version}/orca-linux.AppImage";
+      hash = "sha256-pSWXv0a9aKBXEVwxm2cCbWZmLlYq21XSUqilEaXxIhQ=";
+    };
+  };
   
 in {
   imports =
@@ -477,7 +486,7 @@ in {
       beam28Packages.elixir-ls
       lxappearance
       php
-      herdr
+      orca-ide
       aws-sam-cli
       (clojure.override { jdk = jdk25; })
       clojure-lsp
@@ -738,7 +747,7 @@ in {
     };
   };
 
-  # Tailscale: reach this machine (herdr --remote) from work without port-forwarding
+  # Tailscale: reach this machine (remote agent sessions) from work without port-forwarding
   services.tailscale.enable = true;
 
   # Enable Redis server
