@@ -277,10 +277,6 @@ in
       - Be succinct: the concise style goes for code comments too. Long comments break the reading flow.
       - One or two lines saying why, not what. History, measurements and rationale go in the commit message or knowledge pages.
     '';
-    ".go-env.nu".text = ''
-      $env.GOPATH = $"($env.HOME)/go"
-      $env.PATH = ($env.PATH | split row (char esep) | append $"($env.GOPATH)/bin" | uniq)
-    '';
     ".proxychains/proxychains.conf".text = ''
       strict_chain
       proxy_dns
@@ -1008,7 +1004,6 @@ in
       enable = true;
       enableBashIntegration = true;
       enableFishIntegration = true;
-      enableNushellIntegration = true;
       options = ["--cmd cd"];
     };
     zellij = {
@@ -1030,78 +1025,6 @@ in
         };
       };
     };
-    nushell = {
-      enable = true;
-      # configFile.source = ./.../config.nu;
-      # for editing directly to config.nu 
-      configFile.text = ''
-        def start_zellij [] {
-          if 'ZELLIJ' not-in ($env | columns) {
-            if 'ZELLIJ_AUTO_ATTACH' in ($env | columns) and $env.ZELLIJ_AUTO_ATTACH == 'true' {
-              zellij attach -c
-            } else {
-              zellij
-            }
-
-            if 'ZELLIJ_AUTO_EXIT' in ($env | columns) and $env.ZELLIJ_AUTO_EXIT == 'true' {
-              exit
-            }
-          }
-        }
-        start_zellij
-        # Load Go environment
-        source ~/.go-env.nu
-        '';
-      extraConfig = ''
-        let carapace_completer = {|spans|
-          carapace $spans.0 nushell ...$spans | from json
-        }
-        def --env cbp [] { wl-paste | lines | parse "export {name}=\"{value}\"" | transpose --ignore-titles -r -d | load-env }
-        def curl-proxy [...args] {
-          with-env {HTTP_PROXY: "http://localhost:8118", http_proxy: "http://localhost:8118"} {
-            curl ...$args
-          }
-        }
-        $env.config = {
-          show_banner: false,
-          completions: {
-            case_sensitive: false # case-sensitive completions
-            quick: true    # set to false to prevent auto-selecting completions
-            partial: true    # set to false to prevent partial filling of the prompt
-            algorithm: "fuzzy"    # prefix or fuzzy
-            external: {
-            # set to false to prevent nushell looking into $env.PATH to find more suggestions
-              enable: true 
-            # set to lower can improve completion performance at the cost of omitting some options
-              max_results: 100 
-              completer: $carapace_completer # check 'carapace_completer' 
-            }
-          }
-        } 
-        $env.PATH = ($env.PATH | 
-          split row (char esep) |
-          prepend /home/${user}/.apps |
-          prepend /home/${user}/.npm  |
-          prepend /home/${user}/.npm/bin |
-          prepend /home/${user}/.npm/lib |
-          prepend /home/${user}/.local/bin |
-          prepend /home/${user}/.cargo/bin |
-          append /usr/bin/env
-        )
-      '';
-      shellAliases = {
-        vi = "hx";
-        vim = "hx";
-        nano = "hx";
-        ll = "ls -al";
-        switchhypr = "sudo nixos-rebuild switch --impure --flake .";
-        switchuhypr = "nix flake update && sudo nixos-rebuild switch --impure --flake .";
-        zl = "zellij list-sessions";
-        za = "zellij attach";
-        pj="npx projen";
-        # ssmssdev = "aws ssm start-session --target i-0cad1bdfd1e0c7da7 --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters '{\"host\":[\"database-1.cluster-clcgcc8gmisl.eu-central-1.rds.amazonaws.com\"],\"portNumber\":[\"5432\"],\"localPortNumber\":[\"1033\"]}' --region eu-central-1";
-      };
-    };  
     fish = {
       enable = true;
       shellAliases = {
@@ -1224,13 +1147,11 @@ in
 
     carapace = {
       enable = true;
-      enableNushellIntegration = true;
       enableFishIntegration = true;
     };
 
     starship = { 
       enable = true;
-      enableNushellIntegration = true;
       enableBashIntegration = true;
       enableFishIntegration = true;
       settings = {
