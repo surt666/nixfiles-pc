@@ -47,7 +47,6 @@ in {
   #   ];
   # };
   # Bootloader.
-  boot.initrd.systemd.enable = true;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.blacklistedKernelModules = [ "amdgpu" ];
@@ -460,7 +459,6 @@ in {
       gnumake
       uv
       marp-cli
-      rye
       gtk3
       qt5.qtbase
       qt5.qtwayland
