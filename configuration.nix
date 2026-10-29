@@ -144,20 +144,26 @@ in {
   #   };
   # };
 
-  # Enable Ollama service
-  # Temporarily disabled: pkgs.ollama-cuda fails to build in the current
-  # nixpkgs snapshot — its CUDA (ggml-cuda) backend can't locate `nvcc`
-  # ("CUDA Toolkit not found" / "Could not find nvcc executable in path
-  # specified by CUDAToolkit_ROOT"), which broke the whole system build.
-  # Re-enable once nixpkgs fixes the ollama-cuda CUDAToolkit_ROOT packaging,
-  # or switch to `package = pkgs.ollama;` for a CPU-only build. Note that
-  # "gemma4:31b" is not a real model tag (likely meant "gemma3").
-  # services.ollama = {
-  #   enable = true;
-  #   # Use pkgs.ollama-cuda or pkgs.ollama-rocm depending on your GPU
-  #   package = pkgs.ollama-cuda;
-  #   loadModels = [ "gemma4:31b" ]; # Pulls the 31B desktop variant
-  # };
+  # Qwen3.8-27B on the 16 GB RTX 5060 Ti: Q3_K_XL (12.2 GiB) leaves room for KV cache and the desktop.
+  services.llama-cpp = {
+    enable = true;
+    package = (pkgs.llama-cpp.override { cudaSupport = true; }).overrideAttrs (o: {
+      # Only build kernels for this GPU (sm_120); all archs takes hours.
+      cmakeFlags = o.cmakeFlags ++ [ "-DCMAKE_CUDA_ARCHITECTURES=120" ];
+    });
+    settings = {
+      model = pkgs.fetchurl {
+        url = "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/4ca720788d1e01f1bff70c033e0d0028fd02e502/Qwen3.8-27B-UD-Q3_K_XL.gguf";
+        sha256 = "8c2a45ff85e7674ca185ec8eb6cdeab0e617ed9d8018caed0b64380eb2a67a5e";
+      };
+      n-gpu-layers = 99;
+      ctx-size = 32768;
+      flash-attn = "on";
+      cache-type-k = "q8_0";
+      cache-type-v = "q8_0";
+      jinja = true;
+    };
+  };
 
   services = {
     libinput.enable = true;
