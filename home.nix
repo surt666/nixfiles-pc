@@ -1009,7 +1009,11 @@ in
           npm = "@ai-sdk/openai-compatible";
           name = "llama.cpp (local)";
           options.baseURL = "http://127.0.0.1:8080/v1";
-          models."qwen3.8-27b".name = "Qwen3.8-27B";
+          models."qwen3.8-27b" = {
+            name = "Qwen3.8-27B";
+            # Must match llama-cpp ctx-size so OpenCode compacts before overflowing.
+            limit = { context = 32768; output = 8192; };
+          };
         };
       };
     };
