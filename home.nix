@@ -1000,6 +1000,19 @@ in
         ];
       };
     };
+    # Agent for Orca backed by the local llama-cpp service (Qwen3.8-27B).
+    opencode = {
+      enable = true;
+      settings = {
+        model = "llama-cpp/qwen3.8-27b";
+        provider.llama-cpp = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "llama.cpp (local)";
+          options.baseURL = "http://127.0.0.1:8080/v1";
+          models."qwen3.8-27b".name = "Qwen3.8-27B";
+        };
+      };
+    };
     zoxide = {
       enable = true;
       enableBashIntegration = true;
