@@ -156,7 +156,6 @@ in {
         url = "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/4ca720788d1e01f1bff70c033e0d0028fd02e502/Qwen3.8-27B-UD-Q3_K_XL.gguf";
         sha256 = "8c2a45ff85e7674ca185ec8eb6cdeab0e617ed9d8018caed0b64380eb2a67a5e";
       };
-      n-gpu-layers = 99;
       ctx-size = 32768;
       flash-attn = "on";
       cache-type-k = "q8_0";
