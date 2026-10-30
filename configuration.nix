@@ -11,7 +11,7 @@ let  # Define cross-compilation targets
   aarch64-linux-musl = pkgs.pkgsCross.aarch64-multiplatform-musl;
   aarch64-linux = pkgs.pkgsCross.aarch64-multiplatform;
   # stablyai/orca agent IDE; nixpkgs `orca` is the GNOME screen reader.
-  orca-ide = pkgs.appimageTools.wrapType2 rec {
+  orca-ide-appimage = pkgs.appimageTools.wrapType2 rec {
     pname = "orca-ide";
     version = "1.4.244";
     src = pkgs.fetchurl {
@@ -19,6 +19,10 @@ let  # Define cross-compilation targets
       hash = "sha256-pSWXv0a9aKBXEVwxm2cCbWZmLlYq21XSUqilEaXxIhQ=";
     };
   };
+  # Orca reads its controlling tty, so `orca-ide &` gets SIGTTIN-stopped.
+  orca-ide = pkgs.writeShellScriptBin "orca-ide" ''
+    exec ${orca-ide-appimage}/bin/orca-ide "$@" </dev/null
+  '';
   
 in {
   imports =
