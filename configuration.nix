@@ -144,7 +144,7 @@ in {
   #   };
   # };
 
-  # Qwen3.8-27B on the 16 GB RTX 5060 Ti: Q3_K_XL (12.2 GiB) leaves room for KV cache and the desktop.
+  # Qwen3.8-27B on the 16 GB RTX 5060 Ti: IQ3_XXS (10.2 GiB) so it fits on the GPU next to the desktop.
   services.llama-cpp = {
     enable = true;
     package = (pkgs.llama-cpp.override { cudaSupport = true; }).overrideAttrs (o: {
@@ -153,8 +153,8 @@ in {
     });
     settings = {
       model = pkgs.fetchurl {
-        url = "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/4ca720788d1e01f1bff70c033e0d0028fd02e502/Qwen3.8-27B-UD-Q3_K_XL.gguf";
-        sha256 = "8c2a45ff85e7674ca185ec8eb6cdeab0e617ed9d8018caed0b64380eb2a67a5e";
+        url = "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/4ca720788d1e01f1bff70c033e0d0028fd02e502/Qwen3.8-27B-UD-IQ3_XXS.gguf";
+        sha256 = "c0b7c3038681ed2e3040456c1dd45f9858b6c2290bed172c70388a94874f3eee";
       };
       ctx-size = 32768;
       flash-attn = "on";
