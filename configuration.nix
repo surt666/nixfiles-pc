@@ -20,8 +20,9 @@ let  # Define cross-compilation targets
     };
   };
   # Orca reads its controlling tty, so `orca-ide &` gets SIGTTIN-stopped.
+  # GPU compositing flickers on NVIDIA Wayland, like Chrome did before hw accel was turned off.
   orca-ide = pkgs.writeShellScriptBin "orca-ide" ''
-    exec ${orca-ide-appimage}/bin/orca-ide "$@" </dev/null
+    exec ${orca-ide-appimage}/bin/orca-ide --disable-gpu-compositing "$@" </dev/null
   '';
   
 in {
