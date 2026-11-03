@@ -693,6 +693,7 @@ in {
   # started in user sessions.
   # programs.mtr.enable = true;
   programs = {
+    streamcontroller.enable = true; # Elgato Stream Deck app + udev rules
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
