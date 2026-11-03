@@ -19,6 +19,7 @@
         hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DBUS_SESSION_BUS_ADDRESS")
         hl.exec_cmd("~/.config/hypr/scripts/move-sharing-popup.sh")
         hl.exec_cmd("~/.nixfiles/scripts/screensharing.sh")
+        hl.exec_cmd("streamcontroller -b")
     end)
 
     hl.env("LIBVA_DRIVER_NAME", "nvidia")
