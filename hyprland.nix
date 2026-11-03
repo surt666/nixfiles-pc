@@ -108,7 +108,7 @@
 
     hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("ghostty"))
     hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.close())
-    hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("GDK_BACKEND=x11 slack"))
+    hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("streamcontroller"))
     hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("GDK_BACKEND=x11 teams-for-linux"))
     hl.bind(mainMod .. " + M", hl.dsp.exit())
     hl.bind(mainMod .. " + F", hl.dsp.exec_cmd("firefox"))
