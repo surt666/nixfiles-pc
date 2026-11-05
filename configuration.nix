@@ -65,6 +65,7 @@ in {
   boot.loader.efi.canTouchEfiVariables = true;
   boot.blacklistedKernelModules = [ "amdgpu" ];
   boot.kernelPackages = pkgs.linuxPackages;  #_latest; #pkgs.linuxPackages_6_10;pkgs.linuxPackages;   
+  boot.kernel.sysctl."kernel.perf_event_paranoid" = 1; # perf call graphs for cargo flamegraph
   boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "usbcore.autosuspend=-1" "usb-storage.delay_use=0" "mem_sleep_default=s2idle" ];
 
   # Drop "bpf" from the LSM stack (NixOS default is [ "landlock" "yama" "bpf" ]).
