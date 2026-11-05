@@ -460,6 +460,7 @@ in {
       # roc  # Temporarily disabled: failing tests
       claude-code
       pnpm
+      rnote
       obs-studio
       kdePackages.kdenlive
       antigravity-cli
@@ -806,30 +807,30 @@ in {
   # };
 
   # Enable QuestDB
-  systemd.services.questdb = {
-    description = "QuestDB Time Series Database";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
-    serviceConfig = {
-      # questdb.jar is built for class file version 69 (Java 25); jdk17/jdk21
-      # fail with UnsupportedClassVersionError. Keep in sync with the JDK the
-      # nixpkgs questdb wrapper uses.
-      ExecStart = "${pkgs.jdk25}/bin/java -jar ${pkgs.questdb}/share/java/questdb.jar -d /var/lib/questdb";
-      Restart = "on-failure";
-      User = "questdb";
-      Group = "questdb";
-      StateDirectory = "questdb";
-      WorkingDirectory = "/var/lib/questdb";
-    };
-  };
+  # systemd.services.questdb = {
+  #   description = "QuestDB Time Series Database";
+  #   wantedBy = [ "multi-user.target" ];
+  #   after = [ "network.target" ];
+  #   serviceConfig = {
+  #     # questdb.jar is built for class file version 69 (Java 25); jdk17/jdk21
+  #     # fail with UnsupportedClassVersionError. Keep in sync with the JDK the
+  #     # nixpkgs questdb wrapper uses.
+  #     ExecStart = "${pkgs.jdk25}/bin/java -jar ${pkgs.questdb}/share/java/questdb.jar -d /var/lib/questdb";
+  #     Restart = "on-failure";
+  #     User = "questdb";
+  #     Group = "questdb";
+  #     StateDirectory = "questdb";
+  #     WorkingDirectory = "/var/lib/questdb";
+  #   };
+  # };
 
-  users.users.questdb = {
-    isSystemUser = true;
-    group = "questdb";
-    description = "QuestDB service user";
-  };
+  # users.users.questdb = {
+  #   isSystemUser = true;
+  #   group = "questdb";
+  #   description = "QuestDB service user";
+  # };
 
-  users.groups.questdb = {};
+  # users.groups.questdb = {};
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
