@@ -559,6 +559,7 @@ in {
       ranger
       usbutils
       dotnet-sdk
+      config.boot.kernelPackages.perf # for cargo flamegraph
       (python314.withPackages (ps: with ps; [ marimo numpy polars scikit-learn anthropic python-dotenv ]))
       # python311Packages.pip
       # python311Packages.python-lsp-server
