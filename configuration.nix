@@ -558,7 +558,7 @@ in {
       ranger
       usbutils
       dotnet-sdk
-      (python314.withPackages (ps: with ps; [ marimo numpy polars scikit-learn ]))
+      (python314.withPackages (ps: with ps; [ marimo numpy polars scikit-learn anthropic python-dotenv ]))
       # python311Packages.pip
       # python311Packages.python-lsp-server
       # python311Packages.python-lsp-ruff
