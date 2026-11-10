@@ -42,16 +42,6 @@ in {
         '';
       });
 
-      # Upstream nixpkgs has a stale pnpmDeps hash for 6.0.2. Drop once fixed.
-      typescript-language-server = super.typescript-language-server.overrideAttrs (finalAttrs: old: {
-        pnpmDeps = super.fetchPnpmDeps {
-          inherit (finalAttrs) pname version src;
-          pnpm = super.pnpm_12;
-          fetcherVersion = 4;
-          hash = "sha256-xR/EF60lVBsITKgH7wCM2wHM46PFQevD51KfCENSUH4=";
-        };
-      });
-
       # marimo 0.25.1 pins uv_build<0.13 but nixpkgs ships 0.13.4. Drop once upstream bumps marimo.
       pythonPackagesExtensions = super.pythonPackagesExtensions ++ [
         (pyfinal: pyprev: {
