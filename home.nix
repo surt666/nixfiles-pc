@@ -270,7 +270,7 @@ in
 
       # Way of working
 
-      - Always use the `mmmss` skill (Many More Much Smaller Steps) when changing code, content, config or infrastructure: small ready-to-ready steps, one local commit per step (current branch, no push).
+      - Always use the `mmmss` skill (Many More Much Smaller Steps) when changing code, content, config or infrastructure: small ready-to-ready steps, one local commit per step (current branch, no push unless the project's CLAUDE.md says otherwise).
 
       # Code comments
 
