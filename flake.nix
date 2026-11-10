@@ -13,6 +13,8 @@
     helix.url = "github:helix-editor/helix";
     # TRYX Panorama cooler display; flake only on development until after 2.5.3
     tryx.url = "github:DXVSI/Tryx-Linux-GUI/development";
+    claude-desktop.url = "github:k3d3/claude-desktop-linux-flake";
+    claude-desktop.inputs.nixpkgs.follows = "nixpkgs";
     tryx.inputs.nixpkgs.follows = "nixpkgs";
   };
 

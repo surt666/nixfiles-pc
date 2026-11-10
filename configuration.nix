@@ -459,6 +459,8 @@ in {
       bubblewrap
       worktrunk
       socat
+      # upstream flake still uses nodePackages.asar, removed from nixpkgs
+      (inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop.override { nodePackages.asar = pkgs.asar; })
       # roc  # Temporarily disabled: failing tests
       claude-code
       pnpm
