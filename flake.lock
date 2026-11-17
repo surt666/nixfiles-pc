@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "bend": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794918889,
+        "narHash": "sha256-5muKo6HisVpeFCKCz80C+9sQpyznZ+xsj8DB7qOymE0=",
+        "owner": "bendlang",
+        "repo": "bend",
+        "rev": "9c586f094f4fc88bef440dc8b4d77a2f92c257cc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bendlang",
+        "repo": "bend",
+        "type": "github"
+      }
+    },
     "claude-desktop": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -170,6 +190,7 @@
     },
     "root": {
       "inputs": {
+        "bend": "bend",
         "claude-desktop": "claude-desktop",
         "helix": "helix",
         "home-manager": "home-manager",

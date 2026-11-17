@@ -461,6 +461,7 @@ in {
       socat
       # upstream flake still uses nodePackages.asar, removed from nixpkgs
       (inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop.override { nodePackages.asar = pkgs.asar; })
+      inputs.bend.packages.${pkgs.stdenv.hostPlatform.system}.default
       # roc  # Temporarily disabled: failing tests
       claude-code
       pnpm
