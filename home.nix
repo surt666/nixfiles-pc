@@ -519,6 +519,17 @@ in
       indent = { tab-width = 4, unit = "    " }
       language-servers = ["zls"]
 
+      # Bend 2: no tree-sitter grammar yet, so LSP only
+      [[language]]
+      name = "bend"
+      scope = "source.bend"
+      file-types = ["bend"]
+      roots = []
+      comment-token = "#"
+      indent = { tab-width = 2, unit = "  " }
+      auto-format = true
+      language-servers = ["bend2-lsp"]
+
       [[language]]
       name = "python"
       scope = "source.python"
@@ -754,6 +765,10 @@ in
 
       [language-server.zls]
       command = "zls"
+
+      [language-server.bend2-lsp]
+      command = "bend2-lsp"
+      args = ["--stdio"]
       
       [language-server.clojure-lsp]
       command = "clojure-lsp"
