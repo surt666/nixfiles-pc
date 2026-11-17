@@ -41,17 +41,6 @@ in {
             --replace-fail "UseIn=gnome" "UseIn=gnome;Hyprland"
         '';
       });
-
-      # marimo 0.25.1 pins uv_build<0.13 but nixpkgs ships 0.13.4. Drop once upstream bumps marimo.
-      pythonPackagesExtensions = super.pythonPackagesExtensions ++ [
-        (pyfinal: pyprev: {
-          marimo = pyprev.marimo.overridePythonAttrs (old: {
-            postPatch = (old.postPatch or "") + ''
-              substituteInPlace pyproject.toml --replace-fail "uv_build>=0.8.3,<0.13.0" "uv_build>=0.8.3"
-            '';
-          });
-        })
-      ];
     })
   ];
 

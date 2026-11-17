@@ -1264,14 +1264,7 @@ in
     };
     helix = {
       enable = true;
-      # perl grammar's own bsearch clashes with glibc 2.44's C23 bsearch macro
-      package = inputs.helix.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
-        grammarOverlays = [
-          (final: prev: {
-            perl = prev.perl.overrideAttrs (o: { FLAGS = o.FLAGS ++ [ "-std=gnu17" ]; });
-          })
-        ];
-      };
+      package = inputs.helix.packages.${pkgs.stdenv.hostPlatform.system}.default;
       defaultEditor = true;
       settings = {
         theme = "catppuccin_mocha_md";
